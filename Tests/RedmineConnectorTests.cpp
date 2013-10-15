@@ -2,6 +2,7 @@
 #include <QtTest/QtTest>
 #include <QCoreApplication>
 #include <QJsonDocument>
+#include <Core/RedmineConnector.h>
 #include <Core/Task.h>
 
 class RedmineConnectorTests : public QObject
@@ -14,6 +15,7 @@ private Q_SLOTS:
     void testParseSampleIssue217();
     void testParseSample3Issues();
     void testParseSample18Projects();
+    void testBuildTaskList();
 
 private:
     QByteArray testData(const QString& filename);
@@ -58,9 +60,29 @@ void RedmineConnectorTests::testParseSample18Projects()
     QCOMPARE(documentData["limit"].toInt(), 25);
     QCOMPARE(documentData["total_count"].toInt(), 18);
     QCOMPARE(documentData["offset"].toInt(), 0);
-    QJsonArray issuesArray = json["projects"].toArray();
-    QVERIFY(!issuesArray.isEmpty());
-    QCOMPARE(issuesArray.count(), 18);
+    QJsonArray projectsArray = json["projects"].toArray();
+    QVERIFY(!projectsArray.isEmpty());
+    QCOMPARE(projectsArray.count(), 18);
+    QJsonObject project = projectsArray.at(1).toObject();
+    QVERIFY(!project.isEmpty());
+    RedmineConnector connector;
+    Task task = connector.parseProject(project);
+    QCOMPARE(task.id(), 6);
+    QCOMPARE(task.name(), QLatin1String("H1"));
+    QCOMPARE(task.parent(), 2);
+    QCOMPARE(task.validFrom().date(), QDate(2013, 4, 27));
+}
+
+void RedmineConnectorTests::testBuildTaskList()
+{
+    const QJsonObject json = testObject(":/RedmineConnectorTest/Data/RedmineConnector/Sample18Projects.json");
+    QVERIFY(!json.isEmpty());
+    QJsonArray projectsArray = json["projects"].toArray();
+    QCOMPARE(projectsArray.count(), 18);
+
+    RedmineConnector redmine;
+    TaskList tasks = redmine.buildTaskList(projectsArray, QJsonArray());
+    QCOMPARE(tasks.count(), projectsArray.count());
 }
 
 QByteArray RedmineConnectorTests::testData(const QString &filename)
