@@ -5,36 +5,36 @@
 #include "Controller.h"
 #include "CharmDataModel.h"
 
-const QString MetaKey_EventsInLeafsOnly = "EventsInLeafsOnly";
-const QString MetaKey_OneEventAtATime = "OneEventAtATime";
-const QString MetaKey_MainWindowGeometry = "MainWindowGeometry";
-const QString MetaKey_MainWindowVisible = "MainWindowVisible";
-const QString MetaKey_MainWindowGUIStateSelectedTask = "MainWindowGUIStateSelectedTask";
-const QString MetaKey_MainWindowGUIStateExpandedTasks = "MainWindowGUIStateExpandedTasks";
-const QString MetaKey_TimeTrackerGeometry = "TimeTrackerGeometry";
-const QString MetaKey_TimeTrackerVisible = "TimeTrackerVisible";
-const QString MetaKey_ReportsRecentSavePath = "ReportsRecentSavePath";
-const QString MetaKey_ExportToXmlRecentSavePath = "ExportToXmlSavePath";
-const QString MetaKey_TimesheetSubscribedOnly = "TimesheetSubscribedOnly";
-const QString MetaKey_TimesheetActiveOnly = "TimesheetActiveOnly";
-const QString MetaKey_TimesheetRootTask = "TimesheetRootTask";
-const QString MetaKey_LastEventEditorDateTime= "LastEventEditorDateTime";
-const QString MetaKey_Key_InstallationId = "InstallationId";
-const QString MetaKey_Key_UserName = "UserName";
-const QString MetaKey_Key_UserId = "UserId";
-const QString MetaKey_Key_LocalStorageDatabase = "LocalStorageDatabase";
-const QString MetaKey_Key_LocalStorageType = "LocalStorageType";
-const QString MetaKey_Key_SubscribedTasksOnly = "SubscribedTasksOnly";
-const QString MetaKey_Key_TimeTrackerFontSize = "TimeTrackerFontSize";
-const QString MetaKey_Key_24hEditing = "Key24hEditing";
-const QString MetaKey_Key_DurationFormat = "DurationFormat";
-const QString MetaKey_Key_IdleDetection = "IdleDetection";
-const QString MetaKey_Key_WarnUnuploadedTimesheets = "WarnUnuploadedTimesheets";
-const QString MetaKey_Key_ToolButtonStyle = "ToolButtonStyle";
-const QString MetaKey_Key_ShowStatusBar = "ShowStatusBar";
+const QString MetaKey_EventsInLeafsOnly = QLatin1String("EventsInLeafsOnly");
+const QString MetaKey_OneEventAtATime = QLatin1String("OneEventAtATime");
+const QString MetaKey_MainWindowGeometry = QLatin1String("MainWindowGeometry");
+const QString MetaKey_MainWindowVisible = QLatin1String("MainWindowVisible");
+const QString MetaKey_MainWindowGUIStateSelectedTask = QLatin1String("MainWindowGUIStateSelectedTask");
+const QString MetaKey_MainWindowGUIStateExpandedTasks = QLatin1String("MainWindowGUIStateExpandedTasks");
+const QString MetaKey_TimeTrackerGeometry = QLatin1String("TimeTrackerGeometry");
+const QString MetaKey_TimeTrackerVisible = QLatin1String("TimeTrackerVisible");
+const QString MetaKey_ReportsRecentSavePath = QLatin1String("ReportsRecentSavePath");
+const QString MetaKey_ExportToXmlRecentSavePath = QLatin1String("ExportToXmlSavePath");
+const QString MetaKey_TimesheetSubscribedOnly = QLatin1String("TimesheetSubscribedOnly");
+const QString MetaKey_TimesheetActiveOnly = QLatin1String("TimesheetActiveOnly");
+const QString MetaKey_TimesheetRootTask = QLatin1String("TimesheetRootTask");
+const QString MetaKey_LastEventEditorDateTime = QLatin1String("LastEventEditorDateTime");
+const QString MetaKey_Key_InstallationId = QLatin1String("InstallationId");
+const QString MetaKey_Key_UserName = QLatin1String("UserName");
+const QString MetaKey_Key_UserId = QLatin1String("UserId");
+const QString MetaKey_Key_LocalStorageDatabase = QLatin1String("LocalStorageDatabase");
+const QString MetaKey_Key_LocalStorageType = QLatin1String("LocalStorageType");
+const QString MetaKey_Key_SubscribedTasksOnly = QLatin1String("SubscribedTasksOnly");
+const QString MetaKey_Key_TimeTrackerFontSize = QLatin1String("TimeTrackerFontSize");
+const QString MetaKey_Key_24hEditing = QLatin1String("Key24hEditing");
+const QString MetaKey_Key_DurationFormat = QLatin1String("DurationFormat");
+const QString MetaKey_Key_IdleDetection = QLatin1String("IdleDetection");
+const QString MetaKey_Key_WarnUnuploadedTimesheets = QLatin1String("WarnUnuploadedTimesheets");
+const QString MetaKey_Key_ToolButtonStyle = QLatin1String("ToolButtonStyle");
+const QString MetaKey_Key_ShowStatusBar = QLatin1String("ShowStatusBar");
 
-const QString TrueString( "true" );
-const QString FalseString( "false" );
+const QString TrueString = QLatin1String( "true" );
+const QString FalseString = QLatin1String( "false" );
 
 const QString& stringForBool( bool val )
 {

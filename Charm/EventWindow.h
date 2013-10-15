@@ -17,13 +17,13 @@ public:
 
     // restore the view
     /* reimpl */ void restore();
-public slots:
+public Q_SLOTS:
     /* reimpl */ void configurationChanged();
 
 protected:
     /* reimpl */ void insertEditMenu();
 
-signals:
+Q_SIGNALS:
     /* reimpl */ void emitCommand( CharmCommand* );
     /* reimpl */ void emitCommandRollback( CharmCommand* );
     /* reimpl */ void quit();

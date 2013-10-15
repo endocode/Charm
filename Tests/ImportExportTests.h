@@ -10,7 +10,7 @@ class ImportExportTests : public TestApplication
 public:
     ImportExportTests();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void importExportTest();
     void importBenchmark();

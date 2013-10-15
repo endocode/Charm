@@ -12,7 +12,7 @@ class SqlTransactionTests : public QObject
 public:
     SqlTransactionTests();
 
-private slots:
+private Q_SLOTS:
     void testMySqlDriverRequirements();
     void testSqLiteDriverRequirements();
     void testMySqlTransactionRollback();

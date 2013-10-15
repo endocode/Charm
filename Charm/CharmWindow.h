@@ -50,11 +50,11 @@ public:
 
     static bool showHideView( QWidget* w );
 
-signals:
+Q_SIGNALS:
     /* reimpl */ void visibilityChanged( bool );
     /* reimpl */ void saveConfiguration();
 
-public slots:
+public Q_SLOTS:
     /* reimpl */ void sendCommandRollback( CharmCommand* );
     /* reimpl */ void sendCommand( CharmCommand* );
     /* reimpl */ void commitCommand( CharmCommand* );

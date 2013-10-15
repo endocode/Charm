@@ -21,7 +21,7 @@ public:
     bool rollback( ControllerInterface* );
     bool finalize();
 
-public slots:
+public Q_SLOTS:
     virtual void eventIdChanged(int,int);
 
 Q_SIGNALS:

@@ -54,7 +54,7 @@ public:
     QWidget* parentWidget() const;
     void setParentWidget(QWidget* pw);
 
-signals:
+Q_SIGNALS:
     void finished(HttpJob*);
 
 protected:

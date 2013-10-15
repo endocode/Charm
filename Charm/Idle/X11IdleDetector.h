@@ -15,7 +15,7 @@ public:
 protected:
     void idlenessDurationChanged();
 
-private slots:
+private Q_SLOTS:
     void checkIdleness();
 
 private:

@@ -70,10 +70,10 @@ class DateChangeWatcher : public QObject
 public:
     explicit DateChangeWatcher( QObject* parent = 0 );
 
-signals:
+Q_SIGNALS:
     void dateChanged();
 
-private slots:
+private Q_SLOTS:
     void slotTimeout();
 
 private:

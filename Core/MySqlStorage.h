@@ -16,7 +16,7 @@ class MySqlStorage: public SqlStorage
 {
 public:
     struct Parameters {
-        Parameters() : port( 3309), database( "Charm" ) {}
+        Parameters() : port( 3309), database(QLatin1String("Charm")) {}
         unsigned int port;
         QString database;
         QString name;

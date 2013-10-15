@@ -13,7 +13,7 @@ public:
     // the lack inheritance of Objective-C classes from C++ ones.
     void dockIconClickEvent();
 
-private slots:
+private Q_SLOTS:
     void handleStateChange( State state ) const;
 
 private:

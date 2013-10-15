@@ -24,7 +24,7 @@ public:
 public Q_SLOTS:
     void accept();
 
-private slots:
+private Q_SLOTS:
     void slotDelayedInitialization();
     void slotStandardTimeSpansChanged();
     void slotTimeSpanSelected( int );

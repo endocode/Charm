@@ -48,19 +48,19 @@ public:
 
     void populateEditMenu( QMenu* );
 
-signals:
+Q_SIGNALS:
     void visible( bool );
     void emitCommand( CharmCommand* );
     void emitCommandRollback( CharmCommand* );
 
-public slots:
+public Q_SLOTS:
     void commitCommand( CharmCommand* );
     void delayedInitialization();
     void timeSpansChanged();
     void timeFrameChanged(int );
     void slotConfigureUi();
 
-private slots:
+private Q_SLOTS:
     void slotEventDoubleClicked( const QModelIndex& );
     void slotEditEvent();
     void slotEditEvent( const Event& );

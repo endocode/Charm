@@ -13,7 +13,7 @@ class ControllerTests : public QObject
 public:
     ControllerTests();
 
-public slots: // not test cases
+public Q_SLOTS: // not test cases
     void slotCurrentEvents( const EventList& );
 
     void slotDefinedTasks( const TaskList& );
@@ -22,7 +22,7 @@ public slots: // not test cases
     void slotTaskUpdated( const Task& );
     void slotTaskDeleted( const Task& );
 
-private slots:
+private Q_SLOTS:
     void initTestCase ();
 
     void initializeConnectBackendTest();

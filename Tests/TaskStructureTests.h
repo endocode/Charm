@@ -12,7 +12,7 @@ class TaskStructureTests : public QObject
 public:
     TaskStructureTests();
 
-private slots:
+private Q_SLOTS:
 
     void checkForUniqueTaskIdsTest_data();
     void checkForUniqueTaskIdsTest();

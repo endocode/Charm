@@ -142,14 +142,14 @@ void dumpEvents( const EventList& events )
         events[i].dump();
 }
 
-const QString EventElement( "event" );
-const QString EventIdAttribute( "eventid" );
-const QString EventInstallationIdAttribute( "installationid" );
-const QString EventTaskIdAttribute( "taskid" );
-const QString EventUserIdAttribute( "userid" );
-const QString EventReportIdAttribute( "reportid" );
-const QString EventStartAttribute( "start" );
-const QString EventEndAttribute( "end" );
+const QString EventElement = QLatin1String("event");
+const QString EventIdAttribute = QLatin1String( "eventid" );
+const QString EventInstallationIdAttribute = QLatin1String( "installationid" );
+const QString EventTaskIdAttribute = QLatin1String( "taskid" );
+const QString EventUserIdAttribute = QLatin1String( "userid" );
+const QString EventReportIdAttribute = QLatin1String( "reportid" );
+const QString EventStartAttribute = QLatin1String( "start" );
+const QString EventEndAttribute = QLatin1String( "end" );
 
 QDomElement Event::toXml( QDomDocument document ) const
 {

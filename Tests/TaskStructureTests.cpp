@@ -28,7 +28,7 @@ void TaskStructureTests::checkForUniqueTaskIdsTest_data()
         QDomElement element = testcase.firstChildElement( Task::taskListTagName() );
         QVERIFY( !element.isNull() );
         TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
-        QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+        QTest::newRow(qPrintable(name)) << tasks << expectedResult;
         QVERIFY( element.nextSiblingElement( Task::taskListTagName() ).isNull() );
         qDebug() << "Added test case" << name;
     }
@@ -54,7 +54,7 @@ void TaskStructureTests::checkForTreenessTest_data()
         QDomElement element = testcase.firstChildElement( Task::taskListTagName() );
         QVERIFY( !element.isNull() );
         TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
-        QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+        QTest::newRow(qPrintable(name)) << tasks << expectedResult;
         QVERIFY( element.nextSiblingElement( Task::taskListTagName() ).isNull() );
         qDebug() << "Added test case" << name;
     }
@@ -105,7 +105,7 @@ void TaskStructureTests::mergeTaskListsTest_data()
         QVERIFY( newFound );
         QVERIFY( mergedFound );
 
-        QTest::newRow( name.toLocal8Bit() ) << old << newTasks << merged;
+        QTest::newRow(qPrintable(name)) << old << newTasks << merged;
         qDebug() << "Added test case" << name;
     }
 }

@@ -11,7 +11,7 @@ class BackendIntegrationTests : public TestApplication
 public:
     BackendIntegrationTests();
 
-private slots:
+private Q_SLOTS:
     void initTestCase ();
 
     void initialValuesTest();

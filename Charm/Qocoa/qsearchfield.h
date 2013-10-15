@@ -18,14 +18,14 @@ public:
     QString placeholderText() const;
     void setFocus(Qt::FocusReason);
 
-public slots:
+public Q_SLOTS:
     void setText(const QString &text);
     void setPlaceholderText(const QString &text);
     void clear();
     void selectAll();
     void setFocus();
 
-signals:
+Q_SIGNALS:
     void textChanged(const QString &text);
     void editingFinished();
     void returnPressed();

@@ -40,13 +40,13 @@ public:
 public Q_SLOTS:
     /* reimpl */ void commitCommand( CharmCommand* );
 
-signals:
+Q_SIGNALS:
     // FIXME connect to MainWindow
     void saveConfiguration();
     void emitCommand( CharmCommand* );
     void emitCommandRollback( CharmCommand* );
 
-private slots:
+private Q_SLOTS:
     void actionNewTask();
     void actionNewSubTask();
     void actionEditTask();

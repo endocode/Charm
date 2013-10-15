@@ -42,7 +42,7 @@ protected:
     void showEvent ( QShowEvent * event );
     void hideEvent( QHideEvent* event );
 
-private slots:
+private Q_SLOTS:
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotDoubleClicked ( const QModelIndex & );
     void slotFilterTextChanged( const QString& );

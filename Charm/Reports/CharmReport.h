@@ -46,12 +46,12 @@ public:
     // or reject signals
     virtual QWidget* configurationPage( ReportDialog* ) = 0;
 
-signals:
+Q_SIGNALS:
     // emit this to signal that the user has accepted the
     // configuration page:
     void accept();
 
-protected slots:
+protected Q_SLOTS:
         /** Create a report window with the content that report() returns,
         and show it. The window will be delete-on-close, so the
         creator does not have tp care for it. It will provide the

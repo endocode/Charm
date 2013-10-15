@@ -26,7 +26,7 @@ protected:
     QPushButton* saveToTextButton();
     QPushButton* uploadButton();
 
-private slots:
+private Q_SLOTS:
     virtual void slotSaveToXml();
     virtual void slotSaveToText();
     virtual void slotPrint();

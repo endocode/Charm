@@ -34,7 +34,7 @@ public:
 public Q_SLOTS:
     void accept();
 
-private slots:
+private Q_SLOTS:
     void slotCheckboxSubtasksOnlyChecked( bool );
     void slotStandardTimeSpansChanged();
     void slotWeekComboItemSelected( int );
@@ -62,7 +62,7 @@ public:
 
     typedef QMap< TaskId, QVector<int> > SecondsMap;
 
-private slots:
+private Q_SLOTS:
     void slotUploadTimesheet();
     void slotTimesheetUploaded(HttpJob*);
 

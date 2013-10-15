@@ -50,7 +50,7 @@ public:
     void eventActivated( EventId id );
     void eventDeactivated( EventId id );
 
-public slots:
+public Q_SLOTS:
     // slots migrated from the old main window:
     void slotEditPreferences( bool ); // show prefs dialog
     void slotAboutDialog();
@@ -70,7 +70,7 @@ protected:
 
     /* reimpl */ void insertEditMenu();
 
-private slots:
+private Q_SLOTS:
     void slotStartEvent( TaskId );
     void slotStopEvent();
     void slotSelectTasksToShow();
@@ -82,7 +82,7 @@ private slots:
 
     void configurationChanged();
 
-signals:
+Q_SIGNALS:
     void emitCommand( CharmCommand* );
     void emitCommandRollback( CharmCommand* );
 

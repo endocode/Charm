@@ -76,7 +76,7 @@ public:
     /*! \reimp */ void saveState( QSessionManager & manager );
     /*! \reimp */ void commitData( QSessionManager & manager );
 
-public slots:
+public Q_SLOTS:
     void setState( State state );
     void slotStopAllTasks();
     void slotQuitApplication();
@@ -86,7 +86,7 @@ public slots:
     void toggleShowHide();
     void setHttpActionsVisible( bool visible );
 
-private slots:
+private Q_SLOTS:
 //     void slotMainWindowVisibilityChanged( bool );
 //     void slotTimeTrackerVisibilityChanged( bool );
     void slotCurrentBackendStatusChanged( const QString& text );
@@ -94,7 +94,7 @@ private slots:
     void slotCharmWindowVisibilityChanged( bool visibility );
     void slotHandleUniqueApplicationConnection();
 
-signals:
+Q_SIGNALS:
     void goToState( State state );
 
 protected:

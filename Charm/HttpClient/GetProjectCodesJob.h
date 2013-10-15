@@ -18,7 +18,7 @@ public:
     QUrl downloadUrl() const;
     void setDownloadUrl(const QUrl& url);
 
-public slots:
+public Q_SLOTS:
 
     virtual bool execute(int state, QNetworkAccessManager *manager);
     virtual bool handle(QNetworkReply *reply);

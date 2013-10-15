@@ -259,7 +259,7 @@ bool Task::lowerTaskId( const Task& left,  const Task& right )
 bool Task::checkForUniqueTaskIds( TaskList tasks )
 {
     std::set<TaskId> ids;
-    for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
+    for ( TaskList::iterator it = tasks.begin(); it != tasks.end(); ++it ) {
         if ( ids.find( ( *it ).id() ) != ids.end() ) {
             return false;
         }

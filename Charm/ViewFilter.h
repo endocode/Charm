@@ -45,7 +45,7 @@ public:
     bool filterAcceptsColumn( int source_column, const QModelIndex& source_parent ) const;
     bool filterAcceptsRow( int row, const QModelIndex& parent ) const;
 
-signals:
+Q_SIGNALS:
     void eventActivationNotice( EventId id );
     void eventDeactivationNotice( EventId id );
 

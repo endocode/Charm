@@ -667,7 +667,7 @@ TaskIdList CharmDataModel::mostFrequentlyUsedTasks() const
         mfuMap[id] = count;
     }
     std::priority_queue<TaskWithCount> mfuTasks;
-    for( QMap<TaskId, unsigned >::const_iterator it = mfuMap.begin(); it != mfuMap.end(); ++it ) {
+    for( QMap<TaskId, unsigned >::iterator it = mfuMap.begin(); it != mfuMap.end(); ++it ) {
         TaskWithCount t;
         t.id = it.key();
         t.count = it.value();
@@ -693,7 +693,7 @@ TaskIdList CharmDataModel::mostRecentlyUsedTasks() const
         mruMap[id]= qMax( mruMap[id], date );
     }
     std::priority_queue<TaskWithLastUseDate> mruTasks;
-    for( QMap<TaskId, QDateTime>::const_iterator it = mruMap.begin(); it != mruMap.end(); ++it ) {
+    for( QMap<TaskId, QDateTime>::iterator it = mruMap.begin(); it != mruMap.end(); ++it ) {
         TaskWithLastUseDate t;
         t.id = it.key();
         t.lastUse = it.value();

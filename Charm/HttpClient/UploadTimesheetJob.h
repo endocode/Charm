@@ -20,7 +20,7 @@ public:
     QUrl uploadUrl() const;
     void setUploadUrl(const QUrl& url);
 
-public slots:
+public Q_SLOTS:
 
     virtual bool execute(int state, QNetworkAccessManager *manager);
     virtual bool handle(QNetworkReply *reply);
