@@ -17,5 +17,6 @@
     <qresource prefix="/RedmineConnectorTest">
         <file>Data/RedmineConnector/SampleIssue271.json</file>
         <file>Data/RedmineConnector/Sample3Issues.json</file>
+        <file>Data/RedmineConnector/Sample18Projects.json</file>
     </qresource>
 </RCC>

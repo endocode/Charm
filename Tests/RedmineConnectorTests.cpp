@@ -13,6 +13,7 @@ public:
 private Q_SLOTS:
     void testParseSampleIssue217();
     void testParseSample3Issues();
+    void testParseSample18Projects();
 
 private:
     QByteArray testData(const QString& filename);
@@ -47,6 +48,19 @@ void RedmineConnectorTests::testParseSample3Issues()
     QJsonArray issuesArray = json["issues"].toArray();
     QVERIFY(!issuesArray.isEmpty());
     QCOMPARE(issuesArray.count(), 3);
+}
+
+void RedmineConnectorTests::testParseSample18Projects()
+{
+    const QJsonObject json = testObject(":/RedmineConnectorTest/Data/RedmineConnector/Sample18Projects.json");
+    QVERIFY(!json.isEmpty());
+    const QVariantMap documentData = json.toVariantMap();
+    QCOMPARE(documentData["limit"].toInt(), 25);
+    QCOMPARE(documentData["total_count"].toInt(), 18);
+    QCOMPARE(documentData["offset"].toInt(), 0);
+    QJsonArray issuesArray = json["projects"].toArray();
+    QVERIFY(!issuesArray.isEmpty());
+    QCOMPARE(issuesArray.count(), 18);
 }
 
 QByteArray RedmineConnectorTests::testData(const QString &filename)
