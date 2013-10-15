@@ -85,3 +85,12 @@ IF( CHARM_DATABASE_CONFIGURATION )
         "CHARM_DATABASE_CONFIGURATION=${CHARM_DATABASE_CONFIGURATION}"
     )
 ENDIF()
+
+SET( RedmineConnectorTests_SRCS RedmineConnectorTests.cpp )
+ADD_EXECUTABLE(
+    RedmineConnectorTests
+    ${RedmineConnectorTests_SRCS}
+    ${TestDataResources_SRCS}
+)
+TARGET_LINK_LIBRARIES( RedmineConnectorTests ${TEST_LIBRARIES} )
+ADD_TEST( NAME RedmineConnectorTests COMMAND RedmineConnectorTests )

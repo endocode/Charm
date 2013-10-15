@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/checkForUniqueTaskIdsTest">
-	<file>Data/simple-tasklists.xml</file>
+        <file>Data/simple-tasklists.xml</file>
     </qresource>
     <qresource prefix="/importExportTest">
         <file>Data/test-database-export.charmdatabaseexport</file>
@@ -13,5 +13,8 @@
     </qresource>
     <qresource prefix="/testTaskExportImport">
         <file>Data/test-tasklistexport.xml</file>
+    </qresource>
+    <qresource prefix="/RedmineConnectorTest">
+        <file>Data/RedmineConnector/SampleIssue271.json</file>
     </qresource>
 </RCC>
