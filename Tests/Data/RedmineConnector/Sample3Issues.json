@@ -1,0 +1,112 @@
+{
+   "limit":3,
+   "issues":[
+      {
+         "updated_on":"2013-08-21T11:14:01+02:00",
+         "description":"",
+         "status":{
+            "name":"New",
+            "id":1
+         },
+         "start_date":"2013-08-20",
+         "author":{
+            "name":"Krzesimir Nowak",
+            "id":10
+         },
+         "created_on":"2013-08-20T13:43:48+02:00",
+         "subject":"subtask for blabla task",
+         "parent":{
+            "id":218
+         },
+         "tracker":{
+            "name":"Bug",
+            "id":1
+         },
+         "id":219,
+         "done_ratio":0,
+         "assigned_to":{
+            "name":"Krzesimir Nowak",
+            "id":10
+         },
+         "priority":{
+            "name":"Normal",
+            "id":4
+         },
+         "project":{
+            "name":"TimetrackingTest",
+            "id":16
+         }
+      },
+      {
+         "updated_on":"2013-08-21T11:14:32+02:00",
+         "description":"",
+         "status":{
+            "name":"New",
+            "id":1
+         },
+         "start_date":"2013-08-20",
+         "author":{
+            "name":"Krzesimir Nowak",
+            "id":10
+         },
+         "created_on":"2013-08-20T13:39:38+02:00",
+         "subject":"blabla",
+         "tracker":{
+            "name":"Bug",
+            "id":1
+         },
+         "id":218,
+         "done_ratio":0,
+         "assigned_to":{
+            "name":"Krzesimir Nowak",
+            "id":10
+         },
+         "priority":{
+            "name":"Normal",
+            "id":4
+         },
+         "project":{
+            "name":"TimetrackingTest",
+            "id":16
+         }
+      },
+      {
+         "updated_on":"2013-08-14T13:59:49+02:00",
+         "description":"Another subtask",
+         "status":{
+            "name":"New",
+            "id":1
+         },
+         "start_date":"2013-08-14",
+         "author":{
+            "name":"Krzesimir Nowak",
+            "id":10
+         },
+         "created_on":"2013-08-14T13:59:49+02:00",
+         "subject":"Subtask",
+         "parent":{
+            "id":205
+         },
+         "tracker":{
+            "name":"Bug",
+            "id":1
+         },
+         "id":206,
+         "done_ratio":0,
+         "assigned_to":{
+            "name":"Krzesimir Nowak",
+            "id":10
+         },
+         "priority":{
+            "name":"Normal",
+            "id":4
+         },
+         "project":{
+            "name":"TimetrackingTest",
+            "id":16
+         }
+      }
+   ],
+   "total_count":4,
+   "offset":0
+}
