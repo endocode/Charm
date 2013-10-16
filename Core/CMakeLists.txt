@@ -20,8 +20,10 @@ SET(
     SmartNameCache.cpp
     XmlSerialization.cpp
     RedmineConnector.cpp
+    Redmine/RedmineConfiguration.cpp
+    Redmine/RedmineRetriever.cpp
 )
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )
 
-TARGET_LINK_LIBRARIES( CharmCore ${QT_LIBRARIES} )
+TARGET_LINK_LIBRARIES( CharmCore ${QT_LIBRARIES} KF5::ThreadWeaver)

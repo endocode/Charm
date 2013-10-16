@@ -10,6 +10,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <QTemporaryFile>
+#include <Core/RedmineConnector.h>
 
 #include "Core/TimeSpans.h"
 #include "Core/TaskListMerger.h"
@@ -402,6 +404,42 @@ void TimeTrackingWindow::slotTasksDownloaded( HttpJob* job_ )
     buffer.setData( job->payload() );
     buffer.open( QIODevice::ReadOnly );
     importTasksFromDeviceOrFile( &buffer, QString() );
+}
+
+void TimeTrackingWindow::slotStartRedmineConnector()
+{
+    const MakeTemporarilyVisible m( this );
+
+    const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select JSON File" ), "",
+                                                           tr("Project lists (*.json)") );
+    if (filename.isNull()) return;
+
+    RedmineConnector connector;
+    TaskListMerger merger;
+    try {
+        const TaskList projects = connector.buildTaskListFromFile(filename);
+        merger.setOldTasks( DATAMODEL->getAllTasks() );
+        merger.setNewTasks( projects );
+        if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
+            QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
+        } else {
+            QString detailsText(
+                tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
+                .arg( merger.modifiedTasks().count() )
+                .arg( merger.addedTasks().count() ) );
+            if ( MessageBox::question( this, tr( "Tasks Import" ), detailsText, tr( "Import" ), tr( "Cancel" ), QMessageBox::Yes )
+                 == QMessageBox::Yes ) {
+                CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
+                sendCommand( cmd );
+            }
+        }
+    } catch(  CharmException& e ) {
+        const QString message = e.what().isEmpty()
+                                ?  tr( "The selected task definitions are invalid and cannot be imported." )
+                                    : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );
+        QMessageBox::critical( this, tr( "Invalid Task Definitions" ), message );
+        return;
+    }
 }
 
 void TimeTrackingWindow::slotImportTasks()
