@@ -1,5 +1,12 @@
 #include "RedmineRetriever.h"
 
+#include <QtDebug>
+#include <QEventLoop>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrlQuery>
+
 namespace Redmine {
 
 Retriever::Retriever(Configuration *config)
@@ -8,14 +15,14 @@ Retriever::Retriever(Configuration *config)
 {
 }
 
-QUrl Retriever::url() const
+QString Retriever::path() const
 {
-    return url_;
+    return path_;
 }
 
-void Retriever::setUrl(QUrl url)
+void Retriever::setPath(const QString &path)
 {
-    url_ = url;
+    path_ = path;
 }
 
 QByteArray Retriever::data() const
@@ -28,9 +35,27 @@ bool Retriever::success() const
     return success_;
 }
 
-void Retriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thread)
+void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread*)
 {
-
+    QNetworkAccessManager manager;
+    QEventLoop loop;
+    QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+    QUrl url = configuration_->server();
+    url.setPath(url.path() + path());
+    QUrlQuery query;
+    query.addQueryItem("key", configuration_->apiKey());
+    url.setQuery(query);
+    auto reply = manager.get(QNetworkRequest(url));
+    loop.exec();
+    qDebug() << "Retriever::run: fetching URL" << url.toString();
+    if (reply->error() == QNetworkReply::NoError) {
+        success_ = true;
+        data_ = reply->readAll();
+        qDebug() << "Retriever::run: success, received" << data_.count() << "bytes.";
+    } else {
+        success_ = false;
+        qDebug() << "Retriever::run: error" << qPrintable(reply->errorString());
+    }
 }
 
 }

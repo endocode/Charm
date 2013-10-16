@@ -10,8 +10,8 @@ class Retriever : public ThreadWeaver::Job
 {
 public:
     Retriever(Configuration* config = 0);
-    QUrl url() const;
-    void setUrl(QUrl url);
+    QString path() const;
+    void setPath(const QString& path);
     QByteArray data() const;
     bool success() const;
 
@@ -20,7 +20,7 @@ protected:
 
 private:
     Configuration* configuration_;
-    QUrl url_;
+    QString path_;
     QByteArray data_;
     bool success_;
 };
