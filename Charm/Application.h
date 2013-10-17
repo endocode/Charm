@@ -138,8 +138,6 @@ private:
     QAction m_actionActivityReport;
     QAction m_actionWeeklyTimesheetReport;
     QAction m_actionMonthlyTimesheetReport;
-    //temp, Mirko: trigger Redmine connector
-    QAction m_actionStartRedmineConnector;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
     IdleDetector* m_idleDetector;

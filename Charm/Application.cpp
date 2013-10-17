@@ -59,8 +59,6 @@ Application::Application(int& argc, char** argv)
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
-    //temp, Mirko:
-    , m_actionStartRedmineConnector( this )
     , m_idleDetector( 0 )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
@@ -199,10 +197,6 @@ Application::Application(int& argc, char** argv)
     connect( &m_actionMonthlyTimesheetReport, SIGNAL( triggered() ),
              &mainView(), SLOT( slotMonthlyTimesheetReport() ) );
 
-    m_actionStartRedmineConnector.setText(tr("Start Redmine Connector..."));
-    connect( &m_actionStartRedmineConnector, SIGNAL( triggered() ),
-             &mainView(), SLOT( slotStartRedmineConnector() ) );
-
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
     if ( m_idleDetector == 0 ) {
@@ -277,8 +271,6 @@ void Application::createFileMenu( QMenuBar *menuBar )
 {
     QMenu* menu = new QMenu( menuBar );
     menu->setTitle ( tr( "File" ) );
-    //temp, Mirko:
-    menu->addAction( &m_actionStartRedmineConnector );
     menu->addAction( &m_actionImportFromXml );
     menu->addAction( &m_actionExportToXml );
     menu->addSeparator();
