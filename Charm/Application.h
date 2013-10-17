@@ -23,6 +23,7 @@
 #include "Core/Controller.h"
 #include "Core/Configuration.h"
 #include "Core/StorageInterface.h"
+#include <Core/Redmine/RedmineConnector.h>
 
 #include "CharmWindow.h"
 #include "TasksWindow.h"
@@ -151,6 +152,7 @@ private:
     // supposed to help on Windows, where constructors for statics
     // do not seem to called correctly.
     DateChangeWatcher* m_dateChangeWatcher;
+    QSharedPointer<Redmine::Connector> m_redmineConnector;
     static Application* m_instance;
 };
 

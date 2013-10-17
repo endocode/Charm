@@ -489,10 +489,14 @@ void Application::leaveConnectingState()
 
 void Application::enterConnectedState()
 {
+    m_redmineConnector.reset(new Redmine::Connector());
+    connect(m_redmineConnector.data(), SIGNAL(updatedTaskList(TaskList)),
+            &m_timeTracker, SLOT(slotRedmineConnectorTaskListUpdate(TaskList)));
 }
 
 void Application::leaveConnectedState()
 {
+    m_redmineConnector.reset();
     m_controller.persistMetaData(CONFIGURATION);
 }
 

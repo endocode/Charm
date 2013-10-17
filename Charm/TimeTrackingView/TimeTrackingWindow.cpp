@@ -406,22 +406,16 @@ void TimeTrackingWindow::slotTasksDownloaded( HttpJob* job_ )
     importTasksFromDeviceOrFile( &buffer, QString() );
 }
 
-void TimeTrackingWindow::slotStartRedmineConnector()
+void TimeTrackingWindow::slotRedmineConnectorTaskListUpdate(TaskList projects)
 {
     const MakeTemporarilyVisible m( this );
 
-    const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select JSON File" ), "",
-                                                           tr("Project lists (*.json)") );
-    if (filename.isNull()) return;
-
-    Redmine::Connector connector;
     TaskListMerger merger;
     try {
-        const TaskList projects = connector.buildTaskListFromFile(filename);
         merger.setOldTasks( DATAMODEL->getAllTasks() );
         merger.setNewTasks( projects );
         if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
-            QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
+            return;
         } else {
             QString detailsText(
                 tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )

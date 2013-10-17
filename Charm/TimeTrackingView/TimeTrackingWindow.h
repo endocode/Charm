@@ -66,7 +66,7 @@ public Q_SLOTS:
     void maybeIdle();
     void slotTasksDownloaded( HttpJob* );
     //temp, Mirko: hook in Redmine Connector
-    void slotStartRedmineConnector();
+    void slotRedmineConnectorTaskListUpdate(TaskList);
 
 protected:
 
