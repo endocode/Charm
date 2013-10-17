@@ -2,7 +2,7 @@
 #include <QtTest/QtTest>
 #include <QCoreApplication>
 #include <QJsonDocument>
-#include <Core/RedmineConnector.h>
+#include <Core/Redmine/RedmineConnector.h>
 #include <Core/Task.h>
 
 class RedmineConnectorTests : public QObject
@@ -65,7 +65,7 @@ void RedmineConnectorTests::testParseSample18Projects()
     QCOMPARE(projectsArray.count(), 18);
     QJsonObject project = projectsArray.at(1).toObject();
     QVERIFY(!project.isEmpty());
-    RedmineConnector connector;
+    Redmine::Connector connector;
     Task task = connector.parseProject(project);
     QCOMPARE(task.id(), 6);
     QCOMPARE(task.name(), QLatin1String("H1"));
@@ -80,7 +80,7 @@ void RedmineConnectorTests::testBuildTaskList()
     QJsonArray projectsArray = json["projects"].toArray();
     QCOMPARE(projectsArray.count(), 18);
 
-    RedmineConnector redmine;
+    Redmine::Connector redmine;
     TaskList tasks = redmine.buildTaskList(projectsArray, QJsonArray());
     QCOMPARE(tasks.count(), projectsArray.count());
 }

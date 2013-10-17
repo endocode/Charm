@@ -64,7 +64,7 @@ void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
         return;
     }
     std::transform(issuesArray.begin(), issuesArray.end(), std::back_inserter(issues_),
-                   [this](const QJsonValue& v) { return RedmineConnector::parseIssue(v.toObject()); } );
+                   [this](const QJsonValue& v) { return Connector::parseIssue(v.toObject()); } );
 }
 
 }

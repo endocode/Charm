@@ -19,7 +19,7 @@ SET(
     CharmCommand.cpp
     SmartNameCache.cpp
     XmlSerialization.cpp
-    RedmineConnector.cpp
+    Redmine/RedmineConnector.cpp
     Redmine/RedmineConfiguration.cpp
     Redmine/RedmineRetriever.cpp
     Redmine/IssuesRetriever.cpp

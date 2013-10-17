@@ -3,12 +3,14 @@
 #include "CharmExceptions.h"
 #include "RedmineConnector.h"
 
-RedmineConnector::RedmineConnector(QObject *parent) :
+namespace Redmine {
+
+Connector::Connector(QObject *parent) :
     QObject(parent)
 {
 }
 
-TaskList RedmineConnector::buildTaskListFromFile(const QString &filename)
+TaskList Connector::buildTaskListFromFile(const QString &filename)
 {
     QFile inputFile(filename);
     if (!inputFile.open(QIODevice::ReadOnly)) {
@@ -30,7 +32,7 @@ TaskList RedmineConnector::buildTaskListFromFile(const QString &filename)
     return tasks;
 }
 
-TaskList RedmineConnector::buildTaskList(QJsonArray projects, QJsonArray issues)
+TaskList Connector::buildTaskList(QJsonArray projects, QJsonArray issues)
 {
     TaskList tasks;
     std::transform(projects.begin(), projects.end(), std::back_inserter(tasks),
@@ -38,7 +40,7 @@ TaskList RedmineConnector::buildTaskList(QJsonArray projects, QJsonArray issues)
     return tasks;
 }
 
-Task RedmineConnector::parseProject(const QJsonObject &project)
+Task Connector::parseProject(const QJsonObject &project)
 {
     Task task;
     const QVariantMap projectData = project.toVariantMap();
@@ -51,7 +53,7 @@ Task RedmineConnector::parseProject(const QJsonObject &project)
     return task;
 }
 
-Task RedmineConnector::parseIssue(const QJsonObject &issue)
+Task Connector::parseIssue(const QJsonObject &issue)
 {
     Task task;
     const QVariantMap issueData = issue.toVariantMap();
@@ -66,4 +68,6 @@ Task RedmineConnector::parseIssue(const QJsonObject &issue)
     task.setName(issueData["subject"].toString());
     task.setValidFrom(QDateTime::fromString(issueData["start_date"].toString(), Qt::ISODate));
     return task;
+}
+
 }

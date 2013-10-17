@@ -11,7 +11,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QTemporaryFile>
-#include <Core/RedmineConnector.h>
+#include <Core/Redmine/RedmineConnector.h>
 
 #include "Core/TimeSpans.h"
 #include "Core/TaskListMerger.h"
@@ -414,7 +414,7 @@ void TimeTrackingWindow::slotStartRedmineConnector()
                                                            tr("Project lists (*.json)") );
     if (filename.isNull()) return;
 
-    RedmineConnector connector;
+    Redmine::Connector connector;
     TaskListMerger merger;
     try {
         const TaskList projects = connector.buildTaskListFromFile(filename);
