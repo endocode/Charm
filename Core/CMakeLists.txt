@@ -23,6 +23,7 @@ SET(
     Redmine/RedmineParser.cpp
     Redmine/RedmineConfiguration.cpp
     Redmine/RedmineRetriever.cpp
+    Redmine/WindowRetriever.cpp
     Redmine/IssuesRetriever.cpp
 )
 

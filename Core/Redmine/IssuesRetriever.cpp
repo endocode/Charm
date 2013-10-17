@@ -13,35 +13,24 @@
 namespace Redmine {
 
 IssuesRetriever::IssuesRetriever(Configuration* config)
-    : Retriever(config)
-    , offset_()
-    , limit_()
-    , total_()
-    , requestOffset_()
-    , requestLimit_()
+    : WindowRetriever(config)
 {
     setPath("/issues.json");
 }
 
-void IssuesRetriever::setWindow(int offset, int limit)
+int IssuesRetriever::count() const
 {
-    requestOffset_ = offset;
-    requestLimit_ = limit;
+    return issues_.count();
 }
 
-QUrlQuery IssuesRetriever::setupQuery()
+TaskList IssuesRetriever::issues() const
 {
-    QUrlQuery query = Retriever::setupQuery();
-    if (requestLimit_ != 0) {
-        query.addQueryItem("offset", QString::number(requestOffset_));
-        query.addQueryItem("limit", QString::number(requestLimit_));
-    }
-    return query;
+    return issues_;
 }
 
 void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thread)
 {
-    Retriever::run(job, thread);
+    WindowRetriever::run(job, thread);
     if (!success()) {
         return;
     }
@@ -52,17 +41,8 @@ void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
         return;
     }
     const QJsonObject json = jsonDoc.object();
-    const QVariantMap documentData = json.toVariantMap();
-    if (documentData.contains("limit")) {
-        limit_ = documentData["limit"].toInt();
-        total_ = documentData["total_count"].toInt();
-        offset_ = documentData["offset"].toInt();
-    } else {
-        setSuccess(false);
-        return;
-    }
     const QJsonArray issuesArray = json["issues"].toArray();
-    if (issuesArray.count() > limit_) {
+    if (issuesArray.count() > limit()) {
         setSuccess(false);
         return;
     }
