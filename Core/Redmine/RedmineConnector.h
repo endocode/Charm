@@ -15,11 +15,6 @@ public:
     //temp, in lieu of a real API:
     TaskList buildTaskListFromFile(const QString& filename);
 
-    static Task parseProject(const QJsonObject& project);
-    static Task parseIssue(const QJsonObject& issue);
-
-    TaskList buildTaskList(QJsonArray projects, QJsonArray issues);
-
 Q_SIGNALS:
     
 public Q_SLOTS:

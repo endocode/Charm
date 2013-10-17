@@ -20,6 +20,7 @@ SET(
     SmartNameCache.cpp
     XmlSerialization.cpp
     Redmine/RedmineConnector.cpp
+    Redmine/RedmineParser.cpp
     Redmine/RedmineConfiguration.cpp
     Redmine/RedmineRetriever.cpp
     Redmine/IssuesRetriever.cpp

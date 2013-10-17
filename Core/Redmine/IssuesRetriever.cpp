@@ -1,10 +1,13 @@
-#include "IssuesRetriever.h"
-#include "RedmineConnector.h"
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QUrlQuery>
+
+#include "IssuesRetriever.h"
+#include "RedmineConnector.h"
+#include <Core/Redmine/RedmineParser.h>
+
 
 
 namespace Redmine {
@@ -64,7 +67,7 @@ void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
         return;
     }
     std::transform(issuesArray.begin(), issuesArray.end(), std::back_inserter(issues_),
-                   [this](const QJsonValue& v) { return Connector::parseIssue(v.toObject()); } );
+                   [this](const QJsonValue& v) { return Parser::parseIssue(v.toObject()); } );
 }
 
 }
