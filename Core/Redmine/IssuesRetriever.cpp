@@ -5,10 +5,7 @@
 #include <QUrlQuery>
 
 #include "IssuesRetriever.h"
-#include "RedmineConnector.h"
-#include <Core/Redmine/RedmineParser.h>
-
-
+#include "RedmineParser.h"
 
 namespace Redmine {
 

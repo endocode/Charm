@@ -6,6 +6,7 @@
 #include <Core/Redmine/RedmineRetriever.h>
 #include <Core/CharmExceptions.h>
 #include <Core/Redmine/IssuesRetriever.h>
+#include <Core/Redmine/ProjectsRetriever.h>
 
 class RedmineNetworkingTests : public QObject
 {
@@ -18,6 +19,7 @@ public:
 private Q_SLOTS:
     void testRetriever();
     void testIssuesRetriever();
+    void testProjectsRetriever();
 
 private:
     Redmine::Configuration configuration_;
@@ -71,6 +73,29 @@ void RedmineNetworkingTests::testIssuesRetriever()
         }
     }
     qDebug() << "Retrieved" << tasks.count() << "issues.";
+}
+
+void RedmineNetworkingTests::testProjectsRetriever()
+{
+    Redmine::ProjectsRetriever retriever(configuration());
+    retriever.setWindow(0, 4);
+    retriever.blockingExecute();
+    QCOMPARE(retriever.success(), true);
+    qDebug() << "Results: offset" << retriever.offset() << "- limit"
+             << retriever.limit() << "- total" << retriever.total();
+
+    TaskList tasks;
+    tasks << retriever.projects();
+    if (retriever.limit() < retriever.total()) {
+        for(int current = retriever.offset() + retriever.limit(); current < retriever.total(); current += retriever.limit() ) {
+            Redmine::ProjectsRetriever chunk(configuration());
+            chunk.setWindow(current, retriever.limit());
+            chunk.blockingExecute();
+            QCOMPARE(chunk.success(), true);
+            tasks << chunk.projects();
+        }
+    }
+    qDebug() << "Retrieved" << tasks.count() << "projects.";
 }
 
 QTEST_MAIN(RedmineNetworkingTests)

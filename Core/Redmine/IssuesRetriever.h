@@ -9,7 +9,7 @@
 
 namespace Redmine {
 
-/** @brief IssuesRetriever extends Retriever to receive Redmine issues JSON data. */
+/** @brief IssuesRetriever extends WindowRetriever to receive Redmine issues JSON data. */
 class IssuesRetriever : public WindowRetriever
 {
 public:

@@ -65,8 +65,8 @@ void WindowRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
 
 void Redmine::WindowRetriever::setWindow(int offset, int limit)
 {
-    offset_ = offset;
-    limit_ = limit;
+    requestOffset_ = offset;
+    requestLimit_ = limit;
 }
 
 }
