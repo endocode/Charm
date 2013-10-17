@@ -26,6 +26,7 @@ SET(
     Redmine/WindowRetriever.cpp
     Redmine/IssuesRetriever.cpp
     Redmine/ProjectsRetriever.cpp
+    Redmine/RedmineTaskListProvider.cpp
 )
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )

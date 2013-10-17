@@ -7,6 +7,8 @@
 #include <Core/CharmExceptions.h>
 #include <Core/Redmine/IssuesRetriever.h>
 #include <Core/Redmine/ProjectsRetriever.h>
+#include <Core/Redmine/RedmineTaskListProvider.h>
+#include <Redmine/RedmineConnector.h>
 
 class RedmineNetworkingTests : public QObject
 {
@@ -20,6 +22,8 @@ private Q_SLOTS:
     void testRetriever();
     void testIssuesRetriever();
     void testProjectsRetriever();
+    void testTaskListProvider();
+    void testRedmineConnector();
 
 private:
     Redmine::Configuration configuration_;
@@ -37,6 +41,7 @@ RedmineNetworkingTests::RedmineNetworkingTests()
     }
     configuration_.setServer(QUrl(server));
     configuration_.setApiKey(apiKey);
+    qRegisterMetaType<TaskList>("TaskList");
 }
 
 Redmine::Configuration *RedmineNetworkingTests::configuration()
@@ -96,6 +101,25 @@ void RedmineNetworkingTests::testProjectsRetriever()
         }
     }
     qDebug() << "Retrieved" << tasks.count() << "projects.";
+}
+
+void RedmineNetworkingTests::testTaskListProvider()
+{
+    Redmine::TaskListProvider provider(configuration());
+    QEventLoop loop;
+    connect(&provider, SIGNAL(completed()), &loop, SLOT(quit()));
+    provider.update();
+    loop.exec();
+    qDebug() << "Retrieved" << provider.tasks().count() << "tasks.";
+}
+
+void RedmineNetworkingTests::testRedmineConnector()
+{
+    Redmine::Connector connector;
+    QEventLoop loop;
+    connect(&connector, SIGNAL(updatedTaskList(TaskList)), &loop, SLOT(quit()));
+    connect(&connector, SIGNAL(connectorError(QString)), &loop, SLOT(quit()));
+    loop.exec();
 }
 
 QTEST_MAIN(RedmineNetworkingTests)
