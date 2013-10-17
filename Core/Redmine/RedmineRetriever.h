@@ -6,6 +6,7 @@
 
 namespace Redmine {
 
+/** @brief Retriever implements accessing the Redmine API based on the given configuration. */
 class Retriever : public ThreadWeaver::Job
 {
 public:
@@ -16,6 +17,8 @@ public:
     bool success() const;
 
 protected:
+    void setSuccess(bool success);
+    virtual QUrlQuery setupQuery();
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread);
 
 private:

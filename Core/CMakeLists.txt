@@ -22,6 +22,7 @@ SET(
     RedmineConnector.cpp
     Redmine/RedmineConfiguration.cpp
     Redmine/RedmineRetriever.cpp
+    Redmine/IssuesRetriever.cpp
 )
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )

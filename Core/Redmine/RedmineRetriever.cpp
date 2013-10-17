@@ -35,6 +35,18 @@ bool Retriever::success() const
     return success_;
 }
 
+void Retriever::setSuccess(bool success)
+{
+    success_ = success;
+}
+
+QUrlQuery Retriever::setupQuery()
+{
+    QUrlQuery query;
+    query.addQueryItem("key", configuration_->apiKey());
+    return query;
+}
+
 void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread*)
 {
     QNetworkAccessManager manager;
@@ -42,18 +54,16 @@ void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread*)
     QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
     QUrl url = configuration_->server();
     url.setPath(url.path() + path());
-    QUrlQuery query;
-    query.addQueryItem("key", configuration_->apiKey());
-    url.setQuery(query);
+    url.setQuery(setupQuery());
     auto reply = manager.get(QNetworkRequest(url));
     loop.exec();
     qDebug() << "Retriever::run: fetching URL" << url.toString();
     if (reply->error() == QNetworkReply::NoError) {
-        success_ = true;
+        setSuccess(true);
         data_ = reply->readAll();
         qDebug() << "Retriever::run: success, received" << data_.count() << "bytes.";
     } else {
-        success_ = false;
+        setSuccess(false);
         qDebug() << "Retriever::run: error" << qPrintable(reply->errorString());
     }
 }

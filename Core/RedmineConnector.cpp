@@ -50,3 +50,20 @@ Task RedmineConnector::parseProject(const QJsonObject &project)
     task.setValidFrom(QDateTime::fromString(projectData["created_on"].toString(), Qt::ISODate));
     return task;
 }
+
+Task RedmineConnector::parseIssue(const QJsonObject &issue)
+{
+    Task task;
+    const QVariantMap issueData = issue.toVariantMap();
+    QJsonObject projectObject = issue["project"].toObject();
+    const QVariantMap projectData = projectObject.toVariantMap();
+    const int project = projectData["id"].toInt();
+    int taskIdBase = project;
+    while (taskIdBase < 100000) taskIdBase *= 10;
+    const int taskId = taskIdBase + issueData["id"].value<TaskId>();
+    task.setId(taskId);
+    task.setParent(project);
+    task.setName(issueData["subject"].toString());
+    task.setValidFrom(QDateTime::fromString(issueData["start_date"].toString(), Qt::ISODate));
+    return task;
+}

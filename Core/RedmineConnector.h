@@ -13,6 +13,9 @@ public:
     //temp, in lieu of a real API:
     TaskList buildTaskListFromFile(const QString& filename);
 
+    static Task parseProject(const QJsonObject& project);
+    static Task parseIssue(const QJsonObject& issue);
+
 Q_SIGNALS:
     
 public Q_SLOTS:
@@ -21,8 +24,6 @@ private:
     friend class RedmineConnectorTests;
     TaskList buildTaskList(QJsonArray projects, QJsonArray issues);
 
-    Task parseProject(const QJsonObject& project);
-    Task parseIssue(const QJsonObject& issue);
 };
 
 #endif // REDMINECONNECTOR_H
