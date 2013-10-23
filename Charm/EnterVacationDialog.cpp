@@ -17,6 +17,15 @@ static bool isWorkDay( const QDate& date )
     return date.dayOfWeek() != Qt::Saturday && date.dayOfWeek() != Qt::Sunday;
 }
 
+static QString toHtmlEscaped( const QString& s )
+{
+#if QT_VERSION < 0x050000
+    return Qt::escape( s );
+#else
+    return s.toHtmlEscaped();
+#endif
+}
+
 static QString formatDuration( const QDateTime& start, const QDateTime& end )
 {
     Q_ASSERT( start <= end );
@@ -67,7 +76,9 @@ EnterVacationDialog::EnterVacationDialog( QWidget* parent )
 
     m_ui->setupUi( this );
     m_ui->startDate->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->startDate->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     m_ui->endDate->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->endDate->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     //set next week as default range
     const QDate referenceDate = QDate::currentDate().addDays( 7 );
     m_ui->startDate->setDate( Charm::weekDayInWeekOf( Qt::Monday, referenceDate ) );
@@ -121,15 +132,9 @@ void EnterVacationDialog::createEvents()
     const QString endDate = m_ui->endDate->date().toString( Qt::TextDate );
     const Task task = DATAMODEL->getTask( m_selectedTaskId );
 
-#if QT_VERSION < 0x050000
-    QString htmlStartDate = Qt::escape( startDate );
-    QString htmlEndDate = Qt::escape( endDate );
-    QString htmlTaskName = Qt::escape( task.name() );
-#else
-    QString htmlStartDate = startDate.toHtmlEscaped();
-    QString htmlEndDate = endDate.toHtmlEscaped();
-    QString htmlTaskName = task.name().toHtmlEscaped();
-#endif
+    const QString htmlStartDate = toHtmlEscaped( startDate );
+    const QString htmlEndDate = toHtmlEscaped( endDate );
+    const QString htmlTaskName = toHtmlEscaped( task.name() );
 
     QString html = "<html><body>";
     html += QString::fromLatin1("<h1>%1</h1>").arg( tr("Vacation"));
@@ -144,13 +149,8 @@ void EnterVacationDialog::createEvents()
         const QString shortDate = eventStart.toString( Qt::DefaultLocaleShortDate );
         const QString duration = formatDuration( event.startDateTime(), event.endDateTime() );
 
-#if QT_VERSION < 0x050000
-        QString htmlShortDate = Qt::escape( shortDate );
-        QString htmlDuration = Qt::escape( duration );
-#else
-        QString htmlShortDate = shortDate.toHtmlEscaped();
-        QString htmlDuration = duration.toHtmlEscaped();
-#endif
+        const QString htmlShortDate = toHtmlEscaped( shortDate );
+        const QString htmlDuration = toHtmlEscaped( duration );
 
         html += QString::fromLatin1("%1").arg( tr( "%1: %3", "short date, duration" ).arg( htmlShortDate, htmlDuration ) );
         html += "</p><p>";

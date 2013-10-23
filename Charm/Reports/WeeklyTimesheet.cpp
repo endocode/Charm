@@ -92,6 +92,7 @@ WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog( QWidget*
 
     m_ui->setupUi( this );
     m_ui->dateEditDay->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditDay->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
 
@@ -604,7 +605,7 @@ QByteArray WeeklyTimeSheetReport::saveToXml()
 //              << document.toString( 4 );
 //
         return document.toByteArray( 4 );
-    } catch ( XmlSerializationException& e ) {
+    } catch ( const XmlSerializationException& e ) {
         QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }
 
