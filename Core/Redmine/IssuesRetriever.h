@@ -24,6 +24,7 @@ public:
 
 protected:
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread) override;
+    QUrlQuery setupQuery() override;
 
 private:
     TaskList issues_;

@@ -57,4 +57,12 @@ void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
                    [this](const QJsonValue& v) { return Parser::parseIssue(v.toObject(), currentUser()); } );
 }
 
+QUrlQuery IssuesRetriever::setupQuery()
+{
+    QUrlQuery query = WindowRetriever::setupQuery();
+    query.addQueryItem("status_id", "*");
+    query.addQueryItem("include", "journals");
+    return query;
+}
+
 }
