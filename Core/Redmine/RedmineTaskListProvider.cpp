@@ -2,6 +2,7 @@
 
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/JobPointer.h>
+#include <threadweaver/ManagedJobPointer.h>
 #include <threadweaver/Lambda.h>
 
 #include <Core/Task.h>
@@ -10,16 +11,31 @@
 
 #include "IssuesRetriever.h"
 #include "ProjectsRetriever.h"
+#include "RedmineUsersRetriever.h"
+#include "CurrentUserRetriever.h"
 
-
-namespace Redmine {
+namespace ThreadWeaver {
 
 template<typename T>
-ThreadWeaver::JobPointer enqueue(ThreadWeaver::Weaver* weaver, T t) {
-    ThreadWeaver::JobPointer ret(new ThreadWeaver::Lambda<T>(t));
+JobPointer enqueue(Weaver* weaver, T t) {
+    JobPointer ret(new Lambda<T>(t));
     weaver->enqueue(ret);
     return ret;
 }
+
+template<typename T>
+JobPointer enqueue(T t) {
+    return enqueue(Weaver::instance(), t);
+}
+
+template<typename T>
+JobPointer enqueueRaw(Weaver* weaver, T* t) {
+    return ManagedJobPointer(t);
+}
+
+}
+
+namespace Redmine {
 
 TaskListProvider::TaskListProvider(Configuration *config, QObject *parent)
     : QObject(parent)
@@ -35,16 +51,24 @@ TaskList TaskListProvider::tasks() const
 
 void TaskListProvider::update()
 {
-    enqueue(ThreadWeaver::Weaver::instance(), [this]() { performUpdate(); } );
+    ThreadWeaver::enqueue( [this]() { performUpdate(); } );
 }
 
 void TaskListProvider::performUpdate()
 {
     qDebug() << "TaskListProvider::performUpdate: updating...";
+    // Retrieve current user:
+    Redmine::CurrentUserRetriever currentUser(configuration_);
+    currentUser.blockingExecute();
+    if (!currentUser.success()) {
+        emit error("Error retrieving current user.");
+        return;
+    }
+    const User current = currentUser.currentUser();
+    qDebug() << "Current user:" << currentUser.currentUser().name() << "(id" << current.id() << ")";
 
     // Retrieve projects:
     Redmine::ProjectsRetriever projects(configuration_);
-    projects.setWindow(0, 4);
     projects.blockingExecute();
     if (!projects.success()) {
         emit error("Error retrieving projects.");

@@ -107,9 +107,12 @@ void RedmineNetworkingTests::testTaskListProvider()
 {
     Redmine::TaskListProvider provider(configuration());
     QEventLoop loop;
+    QSignalSpy errorSpy(&provider, SIGNAL(error(QString)));
     connect(&provider, SIGNAL(completed()), &loop, SLOT(quit()));
+    connect(&provider, SIGNAL(error(QString)), &loop, SLOT(quit()));
     provider.update();
     loop.exec();
+    QVERIFY(errorSpy.count() == 0);
     qDebug() << "Retrieved" << provider.tasks().count() << "tasks.";
 }
 

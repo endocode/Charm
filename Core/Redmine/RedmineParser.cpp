@@ -42,6 +42,15 @@ TaskList buildTaskList(QJsonArray projects, QJsonArray issues)
     return tasks;
 }
 
+User parseUser(const QJsonObject &userJson)
+{
+    User user;
+    QVariantMap userData = userJson.toVariantMap();
+    user.setId(userData["id"].toInt());
+    user.setName(QObject::tr("%1 %2").arg(userData["firstname"].toString(), userData["lastname"].toString()));
+    return user;
+}
+
 
 
 }
