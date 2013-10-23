@@ -110,7 +110,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     connect( m_showCurrentOnly, SIGNAL( clicked( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
 
-    m_showSubscribedOnly->setText( tr( "Selected" ) );
+    m_showSubscribedOnly->setText( tr( "Assigned to me" ) );
     m_showSubscribedOnly->setCheckable( true );
 #ifdef Q_WS_MAC
     m_showSubscribedOnly->setMinimumWidth( 70 );

@@ -121,9 +121,6 @@ void TaskListProvider::performUpdate()
         QMutexLocker l(&mutex_);
         tasks_ = tasks;
     }
-    Q_FOREACH(Task task, tasks) {
-        task.dump();
-    }
     emit completed();
 }
 
