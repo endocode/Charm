@@ -64,8 +64,8 @@ void TaskListProvider::performUpdate()
         emit error("Error retrieving current user.");
         return;
     }
-    const User current = currentUser.currentUser();
-    qDebug() << "Current user:" << currentUser.currentUser().name() << "(id" << current.id() << ")";
+    const User me = currentUser.currentUser();
+    qDebug() << "Current user:" << me.name() << "(id" << me.id() << ")";
 
     // Retrieve projects:
     Redmine::ProjectsRetriever projects(configuration_);
@@ -94,6 +94,7 @@ void TaskListProvider::performUpdate()
 
     // Retrieve issues:
     Redmine::IssuesRetriever issues(configuration_);
+    issues.setCurrentUser(me);
     issues.blockingExecute();
     if (!issues.success()) {
         emit error("Error retrieving issues.");
@@ -105,6 +106,7 @@ void TaskListProvider::performUpdate()
     if (issues.limit() < issues.total()) {
         for(int current = issues.offset() + issues.limit(); current < issues.total(); current += issues.limit() ) {
             Redmine::IssuesRetriever chunk(configuration_);
+            chunk.setCurrentUser(me);
             chunk.setWindow(current, issues.limit());
             chunk.blockingExecute();
             if (!issues.success()) {
@@ -118,6 +120,9 @@ void TaskListProvider::performUpdate()
     {
         QMutexLocker l(&mutex_);
         tasks_ = tasks;
+    }
+    Q_FOREACH(Task task, tasks) {
+        task.dump();
     }
     emit completed();
 }

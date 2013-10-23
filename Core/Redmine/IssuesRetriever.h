@@ -5,6 +5,7 @@
 #include <Redmine/RedmineConfiguration.h>
 
 #include "Task.h"
+#include "User.h"
 #include "WindowRetriever.h"
 
 namespace Redmine {
@@ -14,6 +15,9 @@ class IssuesRetriever : public WindowRetriever
 {
 public:
     IssuesRetriever(Configuration* config = 0);
+    void setCurrentUser(const User& user);
+    User currentUser() const;
+
     int count() const;
     TaskList issues() const;
 
@@ -23,6 +27,7 @@ protected:
 
 private:
     TaskList issues_;
+    User me_;
 };
 
 }

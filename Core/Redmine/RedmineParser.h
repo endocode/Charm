@@ -11,7 +11,7 @@ namespace Redmine {
 namespace Parser {
 
 Task parseProject(const QJsonObject& project);
-Task parseIssue(const QJsonObject& issue);
+Task parseIssue(const QJsonObject& issue, const User& me);
 User parseUser(const QJsonObject& user);
 
 TaskList buildTaskList(QJsonArray projects, QJsonArray issues);

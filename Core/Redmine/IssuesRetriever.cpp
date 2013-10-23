@@ -15,6 +15,16 @@ IssuesRetriever::IssuesRetriever(Configuration* config)
     setPath("/issues.json");
 }
 
+void IssuesRetriever::setCurrentUser(const User &user)
+{
+    me_ = user;
+}
+
+User IssuesRetriever::currentUser() const
+{
+    return me_;
+}
+
 int IssuesRetriever::count() const
 {
     return issues_.count();
@@ -44,7 +54,7 @@ void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
         return;
     }
     std::transform(issuesArray.begin(), issuesArray.end(), std::back_inserter(issues_),
-                   [this](const QJsonValue& v) { return Parser::parseIssue(v.toObject()); } );
+                   [this](const QJsonValue& v) { return Parser::parseIssue(v.toObject(), currentUser()); } );
 }
 
 }

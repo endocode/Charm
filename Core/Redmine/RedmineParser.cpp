@@ -17,7 +17,7 @@ Task parseProject(const QJsonObject &project)
     return task;
 }
 
-Task parseIssue(const QJsonObject &issue)
+Task parseIssue(const QJsonObject &issue, const User &me)
 {
     Task task;
     const QVariantMap issueData = issue.toVariantMap();
@@ -31,6 +31,12 @@ Task parseIssue(const QJsonObject &issue)
     task.setParent(project);
     task.setName(issueData["subject"].toString());
     task.setValidFrom(QDateTime::fromString(issueData["start_date"].toString(), Qt::ISODate));
+    if (me.isValid()) {
+        QJsonObject ownerObject = issue["assigned_to"].toObject();
+        const QVariantMap ownerData = ownerObject.toVariantMap();
+        const int owner = ownerData["id"].toInt();
+        task.setSubscribed(me.id() == owner);
+    }
     return task;
 }
 
