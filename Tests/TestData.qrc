@@ -18,5 +18,6 @@
         <file>Data/RedmineConnector/SampleIssue271.json</file>
         <file>Data/RedmineConnector/Sample3Issues.json</file>
         <file>Data/RedmineConnector/Sample18Projects.json</file>
+        <file>Data/RedmineConnector/SampleIssueStatuses.json</file>
     </qresource>
 </RCC>

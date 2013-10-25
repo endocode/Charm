@@ -40,13 +40,13 @@ Task parseIssue(const QJsonObject &issue, const User &me)
     return task;
 }
 
-TaskList buildTaskList(QJsonArray projects, QJsonArray issues)
-{
-    TaskList tasks;
-    std::transform(projects.begin(), projects.end(), std::back_inserter(tasks),
-                   [](const QJsonValue& v) { return parseProject(v.toObject()); } );
-    return tasks;
-}
+//TaskList buildTaskList(QJsonArray projects, QJsonArray issues)
+//{
+//    TaskList tasks;
+//    std::transform(projects.begin(), projects.end(), std::back_inserter(tasks),
+//                   [](const QJsonValue& v) { return parseProject(v.toObject()); } );
+//    return tasks;
+//}
 
 User parseUser(const QJsonObject &userJson)
 {
@@ -55,6 +55,17 @@ User parseUser(const QJsonObject &userJson)
     user.setId(userData["id"].toInt());
     user.setName(QObject::tr("%1 %2").arg(userData["firstname"].toString(), userData["lastname"].toString()));
     return user;
+}
+
+Status parseStatus(const QJsonObject &statusObject)
+{
+    Status status;
+    QVariantMap statusData = statusObject.toVariantMap();
+    status.setId(statusData["id"].value<Status::Id>());
+    status.setName(statusData["name"].toString());
+    status.setIsClosed(statusData.value("is_closed", false).toBool());
+    status.setIsDefault(statusData.value("is_default", false).toBool());
+    return status;
 }
 
 

@@ -1,0 +1,31 @@
+{
+   "issue_statuses":[
+      {
+         "id":1,
+         "name":"New",
+         "is_default":true
+      },
+      {
+         "id":2,
+         "name":"In Progress"
+      },
+      {
+         "id":3,
+         "name":"Resolved"
+      },
+      {
+         "id":4,
+         "name":"Feedback"
+      },
+      {
+         "id":5,
+         "name":"Closed",
+         "is_closed":true
+      },
+      {
+         "id":6,
+         "name":"Rejected",
+         "is_closed":true
+      }
+   ]
+}

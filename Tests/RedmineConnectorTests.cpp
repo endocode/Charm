@@ -1,9 +1,12 @@
+#include <set>
+
 #include <QString>
 #include <QtTest/QtTest>
 #include <QCoreApplication>
 #include <QJsonDocument>
 #include <Core/Redmine/RedmineConnector.h>
 #include <Core/Redmine/RedmineParser.h>
+#include <Core/Redmine/Status.h>
 #include <Core/Task.h>
 
 class RedmineConnectorTests : public QObject
@@ -16,7 +19,7 @@ private Q_SLOTS:
     void testParseSampleIssue217();
     void testParseSample3Issues();
     void testParseSample18Projects();
-    void testBuildTaskList();
+    void testParseSampleIssueStatuses();
 
 private:
     QByteArray testData(const QString& filename);
@@ -35,9 +38,8 @@ void RedmineConnectorTests::testParseSampleIssue217()
     const QJsonValue issue = json[QString("issue")];
     QVERIFY(!issue.isNull());
     QVERIFY(issue.isObject());
-    const QVariantMap issueData = issue.toObject().toVariantMap();
-    const QDateTime updatedOnTime(QDateTime::fromString(issueData["updated_on"].toString(), Qt::ISODate));
-    QCOMPARE(updatedOnTime.date(), QDate(2013, 8, 21));
+    const Task task = Redmine::Parser::parseIssue(issue.toObject(), User());
+    QCOMPARE(task.validFrom().date(), QDate(2013, 8, 20));
 }
 
 void RedmineConnectorTests::testParseSample3Issues()
@@ -66,24 +68,41 @@ void RedmineConnectorTests::testParseSample18Projects()
     QCOMPARE(projectsArray.count(), 18);
     QJsonObject project = projectsArray.at(1).toObject();
     QVERIFY(!project.isEmpty());
-    Redmine::Connector connector;
-    Task task = Redmine::Parser::parseProject(project);
+    const Task task = Redmine::Parser::parseProject(project);
     QCOMPARE(task.id(), 6);
     QCOMPARE(task.name(), QLatin1String("H1"));
     QCOMPARE(task.parent(), 2);
     QCOMPARE(task.validFrom().date(), QDate(2013, 4, 27));
 }
 
-void RedmineConnectorTests::testBuildTaskList()
+void RedmineConnectorTests::testParseSampleIssueStatuses()
 {
-    const QJsonObject json = testObject(":/RedmineConnectorTest/Data/RedmineConnector/Sample18Projects.json");
-    QVERIFY(!json.isEmpty());
-    QJsonArray projectsArray = json["projects"].toArray();
-    QCOMPARE(projectsArray.count(), 18);
+    using namespace Redmine;
 
-    Redmine::Connector redmine;
-    TaskList tasks = Redmine::Parser::buildTaskList(projectsArray, QJsonArray());
-    QCOMPARE(tasks.count(), projectsArray.count());
+    const QJsonObject json = testObject(":/RedmineConnectorTest/Data/RedmineConnector/SampleIssueStatuses.json");
+    QJsonArray statusesArray = json["issue_statuses"].toArray();
+    QVERIFY(!statusesArray.isEmpty());
+    QCOMPARE(statusesArray.count(), 6);
+
+    auto cmp = [](const Status& left, const Status& right) { return left.id() < right.id(); };
+    std::set<Status, decltype(cmp)> statuses(cmp);
+    auto parse_status = [](const QJsonValue& element) {
+        Status status = Parser::parseStatus(element.toObject());
+        QVERIFY(status.isValid());
+        return status;
+    };
+    std::transform(statusesArray.begin(), statusesArray.end(), std::inserter(statuses, statuses.begin()), parse_status);
+    const Status statusNew = *statuses.find(Status(1));
+    QVERIFY(statusNew.isValid());
+    QVERIFY(statusClosed.isDefault());
+    QVERIFY(!statusNew.isClosed());
+    QCOMPARE(statusNew.name(), tr("New"));
+
+    const Status statusClosed = *statuses.find(Status(5));
+    QVERIFY(statusClosed.isValid());
+    QVERIFY(!statusClosed.isDefault());
+    QVERIFY(statusClosed.isClosed());
+    QCOMPARE(statusClosed.name(), tr("Closed"));
 }
 
 QByteArray RedmineConnectorTests::testData(const QString &filename)

@@ -29,6 +29,8 @@ SET(
     Redmine/RedmineTaskListProvider.cpp
     Redmine/RedmineUsersRetriever.cpp
     Redmine/CurrentUserRetriever.cpp
+    Redmine/Status.cpp
+    Redmine/StatusRetriever.cpp
 )
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )

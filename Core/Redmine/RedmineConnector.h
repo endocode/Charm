@@ -17,9 +17,6 @@ public:
     explicit Connector(QObject *parent = 0);
     ~Connector();
 
-    //temp, in lieu of a real API:
-    TaskList buildTaskListFromFile(const QString& filename);
-
 Q_SIGNALS:
     void updatedTaskList(TaskList);
     void connectorError(QString);
