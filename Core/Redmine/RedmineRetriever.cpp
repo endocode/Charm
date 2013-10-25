@@ -1,11 +1,12 @@
-#include "RedmineRetriever.h"
-
-#include <QtDebug>
 #include <QEventLoop>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrlQuery>
+
+#include <Core/Logging/Macros.h>
+
+#include "RedmineRetriever.h"
 
 namespace Redmine {
 
@@ -57,14 +58,14 @@ void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread*)
     url.setQuery(setupQuery());
     auto reply = manager.get(QNetworkRequest(url));
     loop.exec();
-    qDebug() << "Retriever::run: fetching URL" << url.toString();
+    DEBUG(QObject::tr("Retriever::run: fetching URL %1").arg(url.toString()));
     if (reply->error() == QNetworkReply::NoError) {
         setSuccess(true);
         data_ = reply->readAll();
-        qDebug() << "Retriever::run: success, received" << data_.count() << "bytes.";
+        DEBUG(QObject::tr("Retriever::run: success, received %1 bytes").arg(data_.count()));
     } else {
         setSuccess(false);
-        qDebug() << "Retriever::run: error" << qPrintable(reply->errorString());
+        DEBUG(QObject::tr("Retriever::run: error: %1").arg(reply->errorString()));
     }
 }
 

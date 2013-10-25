@@ -10,6 +10,9 @@
 #include <Core/Redmine/RedmineTaskListProvider.h>
 #include <Redmine/RedmineConnector.h>
 
+#include <Core/Logging/Facility.h>
+#include <Core/Logging/Macros.h>
+
 class RedmineNetworkingTests : public QObject
 {
     Q_OBJECT
@@ -26,19 +29,28 @@ private Q_SLOTS:
     void testRedmineConnector();
 
 private:
-    Redmine::Configuration configuration_;
+    Redmine::Configuration configuration_;    
+    Logging::Facility log;
 };
 
 RedmineNetworkingTests::RedmineNetworkingTests()
 {
+    QCoreApplication::instance()->setOrganizationName("Endocode AG");
+    QCoreApplication::instance()->setOrganizationDomain("endocode.com");
+    QCoreApplication::instance()->setApplicationName("RedmineConnectorTests");
+    log.setupLogging(Logging::Facility::LogLevel_Trace);
+    TRACE("Executing RedmineNetworkingTests...");
+
     const QString server = qgetenv("CHARM_REDMINE_SERVER");
     if (server.isEmpty()) {
         throw CharmException("Environment variable CHARM_REDMINE_SERVER is not set!");
     }
+    INFO(tr("Charm Redmine server: %1").arg(server));
     const QString apiKey = qgetenv("CHARM_REDMINE_APIKEY");
     if (apiKey.isEmpty()) {
         throw CharmException("Environment variable CHARM_REDMINE_APIKEY is not set!");
     }
+    INFO(tr("Charm Redmine API key: %1").arg(apiKey));
     configuration_.setServer(QUrl(server));
     configuration_.setApiKey(apiKey);
     qRegisterMetaType<TaskList>("TaskList");
@@ -63,8 +75,6 @@ void RedmineNetworkingTests::testIssuesRetriever()
     Redmine::IssuesRetriever retriever(configuration());
     retriever.blockingExecute();
     QCOMPARE(retriever.success(), true);
-    qDebug() << "Results: offset" << retriever.offset() << "- limit"
-             << retriever.limit() << "- total" << retriever.total();
 
     TaskList tasks;
     tasks << retriever.issues();
@@ -77,7 +87,7 @@ void RedmineNetworkingTests::testIssuesRetriever()
             tasks << chunk.issues();
         }
     }
-    qDebug() << "Retrieved" << tasks.count() << "issues.";
+    TRACE(tr("Retrieved %1 issues").arg(tasks.count()));
 }
 
 void RedmineNetworkingTests::testProjectsRetriever()
@@ -86,8 +96,6 @@ void RedmineNetworkingTests::testProjectsRetriever()
     retriever.setWindow(0, 4);
     retriever.blockingExecute();
     QCOMPARE(retriever.success(), true);
-    qDebug() << "Results: offset" << retriever.offset() << "- limit"
-             << retriever.limit() << "- total" << retriever.total();
 
     TaskList tasks;
     tasks << retriever.projects();
@@ -100,7 +108,7 @@ void RedmineNetworkingTests::testProjectsRetriever()
             tasks << chunk.projects();
         }
     }
-    qDebug() << "Retrieved" << tasks.count() << "projects.";
+    TRACE(tr("Retrieved %1 projects").arg(tasks.count()));
 }
 
 void RedmineNetworkingTests::testTaskListProvider()
@@ -113,7 +121,7 @@ void RedmineNetworkingTests::testTaskListProvider()
     provider.update();
     loop.exec();
     QVERIFY(errorSpy.count() == 0);
-    qDebug() << "Retrieved" << provider.tasks().count() << "tasks.";
+    TRACE(tr("Retrieved %1 tasks").arg(provider.tasks().count()));
 }
 
 void RedmineNetworkingTests::testRedmineConnector()

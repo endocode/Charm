@@ -6,6 +6,8 @@
 #include "RedmineConnector.h"
 #include "RedmineParser.h"
 
+#include <Core/Logging/Macros.h>
+
 namespace Redmine {
 
 Connector::Connector(QObject *parent)
@@ -16,10 +18,12 @@ Connector::Connector(QObject *parent)
     if (server.isEmpty()) {
         throw CharmException("Environment variable CHARM_REDMINE_SERVER is not set!");
     }
+    INFO(tr("Charm Redmine server: %1").arg(server));
     const QString apiKey = qgetenv("CHARM_REDMINE_APIKEY");
     if (apiKey.isEmpty()) {
         throw CharmException("Environment variable CHARM_REDMINE_APIKEY is not set!");
     }
+    INFO(tr("Charm Redmine API key: %1").arg(apiKey));
     configuration_.setServer(QUrl(server));
     configuration_.setApiKey(apiKey);
 
@@ -40,7 +44,7 @@ Connector::~Connector()
 
 void Connector::updateCompleted()
 {
-    qDebug() << "Connector::updateCompleted: success.";
+    DEBUG("Connector::updateCompleted: success.");
     emit updatedTaskList(taskListProvider_.tasks());
     timer_.setInterval(15 * 60 * 1000);
     handleUpdateFinished();
@@ -48,7 +52,7 @@ void Connector::updateCompleted()
 
 void Connector::updateAborted(QString message)
 {
-    qDebug() << "Connector::updateAborted: error:" << message;
+    DEBUG(tr("Connector::updateAborted: error: %1").arg(message));
     emit connectorError(message);
     timer_.setInterval(60 * 60 * 1000);
     handleUpdateFinished();
@@ -56,7 +60,7 @@ void Connector::updateAborted(QString message)
 
 void Connector::handleUpdateFinished()
 {
-    qDebug() << "Connector::handleUpdateFinished: next update in" << timer_.interval()/60000 << "minutes";
+    DEBUG(tr("Connector::handleUpdateFinished: next update in %1 minutes").arg(timer_.interval()/60000));
     timer_.start();
 }
 

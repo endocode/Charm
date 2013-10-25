@@ -11,6 +11,9 @@
 #include "Core/CharmExceptions.h"
 #include "CharmCMake.h"
 
+#include <Core/Logging/Facility.h>
+#include <Core/Logging/Macros.h>
+
 void showCriticalError( const QString& msg ) {
     QMessageBox::critical( 0, QObject::tr( "Application Error" ), msg );
     using namespace std;
@@ -19,8 +22,16 @@ void showCriticalError( const QString& msg ) {
 
 int main ( int argc, char** argv )
 {
+    using namespace std;
+
+    Logging::Facility log;
+    QCoreApplication::instance()->setOrganizationName("Endocode AG");
+    QCoreApplication::instance()->setOrganizationDomain("endocode.com");
+    QCoreApplication::instance()->setApplicationName("Charm");
+    log.setupLogging(Logging::Facility::LogLevel_Trace);
+    TRACE(QObject::tr("Charm version %1 starting...").arg(CHARM_VERSION));
+
     if (argc == 2 && qstrcmp(argv[1], "--version") == 0) {
-        using namespace std;
         cout << "Charm version " << CHARM_VERSION << endl;
         return 0;
     }

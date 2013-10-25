@@ -1,5 +1,7 @@
 #include <QtCore>
 
+#include <Core/Logging/Macros.h>
+
 #include "WindowRetriever.h"
 
 namespace Redmine {
@@ -57,7 +59,10 @@ void WindowRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
         limit_ = documentData["limit"].toInt();
         total_ = documentData["total_count"].toInt();
         offset_ = documentData["offset"].toInt();
+        DEBUG(QObject::tr("WindowRetriever::run: success - offset %1, limit %2, total %3")
+                .arg(offset_).arg(limit_).arg(total_));
     } else {
+        ERROR(QObject::tr("WindowRetriever::run: error parsing data"));
         setSuccess(false);
         return;
     }

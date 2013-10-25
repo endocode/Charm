@@ -9,6 +9,9 @@
 #include <Core/Redmine/Status.h>
 #include <Core/Task.h>
 
+#include <Core/Logging/Facility.h>
+#include <Core/Logging/Macros.h>
+
 class RedmineConnectorTests : public QObject
 {
     Q_OBJECT
@@ -25,10 +28,17 @@ private:
     QByteArray testData(const QString& filename);
     QJsonDocument testDocument(const QString& filename);
     QJsonObject testObject(const QString& filename);
+
+    Logging::Facility log;
 };
 
 RedmineConnectorTests::RedmineConnectorTests()
 {
+    QCoreApplication::instance()->setOrganizationName("Endocode AG");
+    QCoreApplication::instance()->setOrganizationDomain("endocode.com");
+    QCoreApplication::instance()->setApplicationName("RedmineConnectorTests");
+    log.setupLogging(Logging::Facility::LogLevel_Trace);
+    TRACE("Executing RedmineConnectorTests...");
 }
 
 void RedmineConnectorTests::testParseSampleIssue217()
@@ -94,7 +104,7 @@ void RedmineConnectorTests::testParseSampleIssueStatuses()
     std::transform(statusesArray.begin(), statusesArray.end(), std::inserter(statuses, statuses.begin()), parse_status);
     const Status statusNew = *statuses.find(Status(1));
     QVERIFY(statusNew.isValid());
-    QVERIFY(statusClosed.isDefault());
+    QVERIFY(statusNew.isDefault());
     QVERIFY(!statusNew.isClosed());
     QCOMPARE(statusNew.name(), tr("New"));
 

@@ -1,5 +1,3 @@
-#include <QtDebug>
-
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/JobPointer.h>
 #include <threadweaver/ManagedJobPointer.h>
@@ -13,6 +11,8 @@
 #include "ProjectsRetriever.h"
 #include "RedmineUsersRetriever.h"
 #include "CurrentUserRetriever.h"
+
+#include <Core/Logging/Macros.h>
 
 namespace ThreadWeaver {
 
@@ -56,7 +56,7 @@ void TaskListProvider::update()
 
 void TaskListProvider::performUpdate()
 {
-    qDebug() << "TaskListProvider::performUpdate: updating...";
+    DEBUG(tr("TaskListProvider::performUpdate: updating..."));
     // Retrieve current user:
     Redmine::CurrentUserRetriever currentUser(configuration_);
     currentUser.blockingExecute();
@@ -65,7 +65,7 @@ void TaskListProvider::performUpdate()
         return;
     }
     const User me = currentUser.currentUser();
-    qDebug() << "Current user:" << me.name() << "(id" << me.id() << ")";
+    DEBUG(tr("TaskListProvider::performUpdate: Current user: %1 (id %2)").arg(me.name()).arg(me.id()));
 
     // Retrieve projects:
     Redmine::ProjectsRetriever projects(configuration_);
@@ -74,7 +74,6 @@ void TaskListProvider::performUpdate()
         emit error("Error retrieving projects.");
         return;
     }
-    qDebug() << "Results: offset" << projects.offset() << "- limit" << projects.limit() << "- total" << projects.total();
 
     TaskList tasks;
     tasks << projects.projects();
@@ -90,7 +89,7 @@ void TaskListProvider::performUpdate()
             tasks << chunk.projects();
         }
     }
-    qDebug() << "Retrieved" << tasks.count() << "projects.";
+    DEBUG(tr("TaskListProvider::performUpdate: retrieved %1 total projects").arg(tasks.count()));
 
     // Retrieve issues:
     Redmine::IssuesRetriever issues(configuration_);
@@ -100,7 +99,6 @@ void TaskListProvider::performUpdate()
         emit error("Error retrieving issues.");
         return;
     }
-    qDebug() << "Results: offset" << issues.offset() << "- limit" << issues.limit() << "- total" << issues.total();
 
     tasks << issues.issues();
     if (issues.limit() < issues.total()) {
@@ -116,6 +114,8 @@ void TaskListProvider::performUpdate()
             tasks << chunk.issues();
         }
     }
+
+    DEBUG(tr("TaskListProvider::performUpdate: retrieved %1 total tasks").arg(tasks.count()));
 
     {
         QMutexLocker l(&mutex_);

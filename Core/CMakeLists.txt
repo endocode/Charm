@@ -31,6 +31,8 @@ SET(
     Redmine/CurrentUserRetriever.cpp
     Redmine/Status.cpp
     Redmine/StatusRetriever.cpp
+    Logging/Locations.cpp
+    Logging/Facility.cpp
 )
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )
