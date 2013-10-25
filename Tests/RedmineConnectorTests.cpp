@@ -6,7 +6,7 @@
 #include <QJsonDocument>
 #include <Core/Redmine/RedmineConnector.h>
 #include <Core/Redmine/RedmineParser.h>
-#include <Core/Redmine/Status.h>
+#include <Core/Redmine/IssueStatus.h>
 #include <Core/Task.h>
 
 #include <Core/Logging/Facility.h>

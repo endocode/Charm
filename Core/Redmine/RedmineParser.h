@@ -5,7 +5,7 @@
 
 #include <Core/Task.h>
 #include <Core/User.h>
-#include <Core/Redmine/Status.h>
+#include <Core/Redmine/IssueStatus.h>
 
 namespace Redmine {
 
@@ -15,8 +15,6 @@ Task parseProject(const QJsonObject& project);
 Task parseIssue(const QJsonObject& issue, const User& me);
 User parseUser(const QJsonObject& user);
 Status parseStatus(const QJsonObject& status);
-
-//TaskList buildTaskList(QJsonArray projects, QJsonArray issues);
 
 }
 

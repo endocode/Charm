@@ -19,6 +19,12 @@ SET(
     CharmCommand.cpp
     SmartNameCache.cpp
     XmlSerialization.cpp
+    Logging/Locations.cpp
+    Logging/Facility.cpp
+    Redmine/RedmineModel.cpp
+    Redmine/IssueStatus.cpp
+    Redmine/RedmineProject.cpp
+    Redmine/RedmineIssue.cpp
     Redmine/RedmineConnector.cpp
     Redmine/RedmineParser.cpp
     Redmine/RedmineConfiguration.cpp
@@ -29,10 +35,7 @@ SET(
     Redmine/RedmineTaskListProvider.cpp
     Redmine/RedmineUsersRetriever.cpp
     Redmine/CurrentUserRetriever.cpp
-    Redmine/Status.cpp
     Redmine/StatusRetriever.cpp
-    Logging/Locations.cpp
-    Logging/Facility.cpp
 )
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )

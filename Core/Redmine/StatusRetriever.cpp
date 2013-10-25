@@ -16,6 +16,17 @@ QVector<Status> StatusRetriever::statuses() const
     return statuses_;
 }
 
+Status StatusRetriever::status(Status::Id id) const
+{
+    //FIXME use a status set that compares by Id
+    Q_FOREACH(const Status& status, statuses_) {
+        if (status.id() == id) {
+            return status;
+        }
+    }
+    return Status();
+}
+
 void StatusRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thread)
 {
     Retriever::run(job, thread);

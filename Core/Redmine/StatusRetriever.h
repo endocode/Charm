@@ -5,7 +5,7 @@
 
 #include <Core/Redmine/RedmineConfiguration.h>
 #include <Core/Redmine/RedmineRetriever.h>
-#include <Core/Redmine/Status.h>
+#include <Core/Redmine/IssueStatus.h>
 
 namespace Redmine {
 
@@ -15,6 +15,7 @@ class StatusRetriever : public Retriever
 public:
     StatusRetriever(Configuration* config = 0);
     QVector<Status> statuses() const;
+    Status status(Status::Id id) const;
 
 protected:
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread) override;

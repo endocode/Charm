@@ -1,4 +1,4 @@
-#include "Status.h"
+#include "IssueStatus.h"
 
 namespace Redmine {
 

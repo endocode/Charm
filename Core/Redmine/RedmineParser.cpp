@@ -40,14 +40,6 @@ Task parseIssue(const QJsonObject &issue, const User &me)
     return task;
 }
 
-//TaskList buildTaskList(QJsonArray projects, QJsonArray issues)
-//{
-//    TaskList tasks;
-//    std::transform(projects.begin(), projects.end(), std::back_inserter(tasks),
-//                   [](const QJsonValue& v) { return parseProject(v.toObject()); } );
-//    return tasks;
-//}
-
 User parseUser(const QJsonObject &userJson)
 {
     User user;

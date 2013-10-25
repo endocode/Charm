@@ -11,6 +11,7 @@
 #include "ProjectsRetriever.h"
 #include "RedmineUsersRetriever.h"
 #include "CurrentUserRetriever.h"
+#include "StatusRetriever.h"
 
 #include <Core/Logging/Macros.h>
 
@@ -66,6 +67,15 @@ void TaskListProvider::performUpdate()
     }
     const User me = currentUser.currentUser();
     DEBUG(tr("TaskListProvider::performUpdate: Current user: %1 (id %2)").arg(me.name()).arg(me.id()));
+
+    // Retrieve issue statuses:
+    Redmine::StatusRetriever statusRetriever(configuration_);
+    statusRetriever.blockingExecute();
+    if (!statusRetriever.success()) {
+        emit error("Error retrieving issue statuses.");
+        return;
+    }
+    DEBUG(tr("TaskListProvider::performUpdate: retrieved %1 issue statuses").arg(statusRetriever.statuses().count()));
 
     // Retrieve projects:
     Redmine::ProjectsRetriever projects(configuration_);
