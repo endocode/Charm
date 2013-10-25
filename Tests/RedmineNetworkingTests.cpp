@@ -7,6 +7,7 @@
 #include <Core/CharmExceptions.h>
 #include <Core/Redmine/IssuesRetriever.h>
 #include <Core/Redmine/ProjectsRetriever.h>
+#include <Core/Redmine/StatusRetriever.h>
 #include <Core/Redmine/RedmineTaskListProvider.h>
 #include <Redmine/RedmineConnector.h>
 
@@ -24,6 +25,7 @@ public:
 private Q_SLOTS:
     void testRetriever();
     void testIssuesRetriever();
+    void testStatusRetriever();
     void testProjectsRetriever();
     void testTaskListProvider();
     void testRedmineConnector();
@@ -37,7 +39,7 @@ RedmineNetworkingTests::RedmineNetworkingTests()
 {
     QCoreApplication::instance()->setOrganizationName("Endocode AG");
     QCoreApplication::instance()->setOrganizationDomain("endocode.com");
-    QCoreApplication::instance()->setApplicationName("RedmineConnectorTests");
+    QCoreApplication::instance()->setApplicationName("RedmineNetworkingTests");
     log.setupLogging(Logging::Facility::LogLevel_Trace);
     TRACE("Executing RedmineNetworkingTests...");
 
@@ -88,6 +90,13 @@ void RedmineNetworkingTests::testIssuesRetriever()
         }
     }
     TRACE(tr("Retrieved %1 issues").arg(tasks.count()));
+}
+
+void RedmineNetworkingTests::testStatusRetriever()
+{
+    Redmine::StatusRetriever retriever(configuration());
+    retriever.blockingExecute();
+    QCOMPARE(retriever.success(), true);
 }
 
 void RedmineNetworkingTests::testProjectsRetriever()
