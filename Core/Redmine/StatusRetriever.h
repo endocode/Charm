@@ -9,11 +9,13 @@
 
 namespace Redmine {
 
+class Model;
+
 /** @brief Retrieves issues statuses from  Redmine. */
 class StatusRetriever : public Retriever
 {
 public:
-    StatusRetriever(Configuration* config = 0);
+    StatusRetriever(Model* model, Configuration* config = 0);
     QVector<Status> statuses() const;
     Status status(Status::Id id) const;
 
@@ -22,6 +24,7 @@ protected:
 
 private:
     QVector<Status> statuses_;
+    Model* model_;
 };
 
 }

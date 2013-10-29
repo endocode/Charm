@@ -24,6 +24,7 @@ Facility::Facility(QObject *parent)
 Facility::~Facility()
 {
     Q_ASSERT(instance_ != 0);
+    qInstallMessageHandler(0);
     instance_ = 0;
 }
 

@@ -2,11 +2,13 @@
 #include "RedmineParser.h"
 
 #include <Core/Logging/Macros.h>
+#include "RedmineModel.h"
 
 namespace Redmine {
 
-StatusRetriever::StatusRetriever(Configuration* configuration)
+StatusRetriever::StatusRetriever(Model* model, Configuration* configuration)
     : Retriever(configuration)
+    , model_(model)
 {
     setPath("/issue_statuses.json");
 }
@@ -45,6 +47,7 @@ void StatusRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
                    [](const QJsonValue& element) { return Parser::parseStatus(element.toObject()); } );
     if (statuses_.count() == statusesArray.count()) {
         DEBUG(QObject::tr("StatusRetriever::run: success, %1 statuses downloaded").arg(statuses_.count()));
+        model_->setIssueStatuses(statuses_);
     } else {
         DEBUG(QObject::tr("StatusRetriever::run: error downloading statuses"));
     }

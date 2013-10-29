@@ -12,7 +12,7 @@ namespace Redmine {
 
 Connector::Connector(QObject *parent)
     : QObject(parent)
-    , taskListProvider_(&configuration_)
+    , modelSynchronizer_(&configuration_)
 {
     const QString server = qgetenv("CHARM_REDMINE_SERVER");
     if (server.isEmpty()) {
@@ -30,9 +30,9 @@ Connector::Connector(QObject *parent)
     timer_.setSingleShot(true);
     timer_.setInterval(15 * 1000);
     timer_.start();
-    connect(&timer_, SIGNAL(timeout()), &taskListProvider_, SLOT(update()));
-    connect(&taskListProvider_, SIGNAL(completed()), SLOT(updateCompleted()), Qt::QueuedConnection);
-    connect(&taskListProvider_, SIGNAL(error(QString)), SLOT(updateAborted(QString)), Qt::QueuedConnection);
+    connect(&timer_, SIGNAL(timeout()), SLOT(triggerModelSynchronization()));
+    connect(&modelSynchronizer_, SIGNAL(completed()), SLOT(synchronizationCompleted()), Qt::QueuedConnection);
+    connect(&modelSynchronizer_, SIGNAL(error()), SLOT(synchronizationAborted()), Qt::QueuedConnection);
 
 }
 
@@ -42,16 +42,24 @@ Connector::~Connector()
     ThreadWeaver::Weaver::instance()->finish();
 }
 
-void Connector::updateCompleted()
+void Connector::triggerModelSynchronization()
+{
+    DEBUG("Connector::triggerModelSynchronization: starting model synchronization");
+    //FIXME treat synchronizer like a job?
+    modelSynchronizer_.synchronize(&model_);
+}
+
+void Connector::synchronizationCompleted()
 {
     DEBUG("Connector::updateCompleted: success.");
-    emit updatedTaskList(taskListProvider_.tasks());
+    emit updatedTaskList(modelSynchronizer_.tasks());
     timer_.setInterval(15 * 60 * 1000);
     handleUpdateFinished();
 }
 
-void Connector::updateAborted(QString message)
+void Connector::synchronizationAborted()
 {
+    QString message = "I have no message for you yet, FIXME";
     DEBUG(tr("Connector::updateAborted: error: %1").arg(message));
     emit connectorError(message);
     timer_.setInterval(60 * 60 * 1000);

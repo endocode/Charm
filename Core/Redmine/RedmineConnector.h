@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTimer>
 
+#include <Core/Redmine/RedmineModel.h>
 #include <Core/Task.h>
 #include "RedmineConfiguration.h"
 #include "RedmineTaskListProvider.h"
@@ -22,13 +23,17 @@ Q_SIGNALS:
     void connectorError(QString);
 
 private Q_SLOTS:
-    void updateCompleted();
-    void updateAborted(QString);
+    void synchronizationCompleted();
+    void synchronizationAborted();
+
+    void triggerModelSynchronization();
 
 private:
     void handleUpdateFinished();
-    TaskListProvider taskListProvider_;
+
+    TaskListProvider modelSynchronizer_;
     QTimer timer_;
+    Model model_;
     Configuration configuration_;
 };
 

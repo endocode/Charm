@@ -142,6 +142,7 @@ ADD_LIBRARY(
     ${CharmApplication_SRCS} ${UiGenerated_SRCS}
 )
 TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS})
+TARGET_LINK_LIBRARIES(CharmApplication ${QT_LIBRARIES} KF5::ThreadWeaver)
 
 SET( Charm_SRCS Charm.cpp )
 

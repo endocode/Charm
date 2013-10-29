@@ -1,6 +1,7 @@
 #include <QString>
 #include <QtTest>
 #include <QCoreApplication>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <Core/Redmine/RedmineConfiguration.h>
 #include <Core/Redmine/RedmineRetriever.h>
@@ -9,7 +10,8 @@
 #include <Core/Redmine/ProjectsRetriever.h>
 #include <Core/Redmine/StatusRetriever.h>
 #include <Core/Redmine/RedmineTaskListProvider.h>
-#include <Redmine/RedmineConnector.h>
+#include <Core/Redmine/RedmineConnector.h>
+#include <Core/Redmine/RedmineModel.h>
 
 #include <Core/Logging/Facility.h>
 #include <Core/Logging/Macros.h>
@@ -26,8 +28,10 @@ private Q_SLOTS:
     void testRetriever();
     void testIssuesRetriever();
     void testStatusRetriever();
+    void testUsersRetriever();
     void testProjectsRetriever();
     void testTaskListProvider();
+    void testAbortConnections();
     void testRedmineConnector();
 
 private:
@@ -94,9 +98,15 @@ void RedmineNetworkingTests::testIssuesRetriever()
 
 void RedmineNetworkingTests::testStatusRetriever()
 {
-    Redmine::StatusRetriever retriever(configuration());
+    Redmine::Model model;
+    Redmine::StatusRetriever retriever(&model, configuration());
     retriever.blockingExecute();
     QCOMPARE(retriever.success(), true);
+}
+
+void RedmineNetworkingTests::testUsersRetriever()
+{
+    QFAIL("NI");
 }
 
 void RedmineNetworkingTests::testProjectsRetriever()
@@ -122,24 +132,62 @@ void RedmineNetworkingTests::testProjectsRetriever()
 
 void RedmineNetworkingTests::testTaskListProvider()
 {
+    Redmine::Model model;
     Redmine::TaskListProvider provider(configuration());
     QEventLoop loop;
-    QSignalSpy errorSpy(&provider, SIGNAL(error(QString)));
+    QSignalSpy errorSpy(&provider, SIGNAL(error()));
     connect(&provider, SIGNAL(completed()), &loop, SLOT(quit()));
-    connect(&provider, SIGNAL(error(QString)), &loop, SLOT(quit()));
-    provider.update();
+    connect(&provider, SIGNAL(error()), &loop, SLOT(quit()));
+    provider.synchronize(&model);
     loop.exec();
     QVERIFY(errorSpy.count() == 0);
     TRACE(tr("Retrieved %1 tasks").arg(provider.tasks().count()));
+    ThreadWeaver::Weaver::instance()->finish();
 }
+
+void RedmineNetworkingTests::testAbortConnections()
+{
+    Redmine::Model model;
+    Redmine::TaskListProvider provider(configuration());
+    QEventLoop loop;
+    QSignalSpy errorSpy(&provider, SIGNAL(error()));
+    connect(&provider, SIGNAL(completed()), &loop, SLOT(quit()));
+    connect(&provider, SIGNAL(error()), &loop, SLOT(quit()));
+    provider.synchronize(&model);
+
+    QTimer timer;
+    timer.singleShot(500, &provider, SLOT(abortCurrentOperations()));
+    loop.exec();
+
+    QTest::qWait(2000);
+    qDebug() << errorSpy.count();
+    QTest::qWait(2000);
+    qDebug() << errorSpy.count();
+    QTest::qWait(2000);
+}
+
 
 void RedmineNetworkingTests::testRedmineConnector()
 {
+    using namespace Redmine;
+    using namespace ThreadWeaver;
+
     Redmine::Connector connector;
-    QEventLoop loop;
-    connect(&connector, SIGNAL(updatedTaskList(TaskList)), &loop, SLOT(quit()));
-    connect(&connector, SIGNAL(connectorError(QString)), &loop, SLOT(quit()));
-    loop.exec();
+//    ThreadWeaver::QJobPointer updater = ThreadWeaver::enqueue_qjob(ModelUpdater, &model, configuration());
+    // Sequence:
+    // * Collection (CurrentUserRetriever, StatusRetriever)
+    // * Collection (IssuesRetriever, ProjectsRetriever, UsersRetriever)
+    // * TreeBuilder
+    // ... further enqueue: Gravatar downloads
+
+    // wait for updater to complete (using loop)
+    // ...
+    // verify results:
+    // ...
+//    QEventLoop loop;
+//    connect(&connector, SIGNAL(updatedTaskList(TaskList)), &loop, SLOT(quit()));
+//    connect(&connector, SIGNAL(connectorError(QString)), &loop, SLOT(quit()));
+//    loop.exec();
 }
 
 QTEST_MAIN(RedmineNetworkingTests)

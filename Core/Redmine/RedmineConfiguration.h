@@ -5,6 +5,8 @@
 #include <QUrl>
 #include <QString>
 
+#include <threadweaver/ResourceRestrictionPolicy.h>
+
 namespace Redmine {
 
 class Configuration : public QObject
@@ -18,12 +20,15 @@ public:
     QString apiKey() const;
     void setApiKey(const QString& key);
 
+    ThreadWeaver::ResourceRestrictionPolicy* network();
+
 Q_SIGNALS:
     void changed();
 
 private:
     QUrl server_;
     QString apiKey_;
+    ThreadWeaver::ResourceRestrictionPolicy network_;
 };
 
 }

@@ -8,11 +8,13 @@
 
 namespace Redmine {
 
+class Model;
+
 /** @brief Retrieve information about the current user from Redmine. */
 class CurrentUserRetriever : public Retriever
 {
 public:
-    CurrentUserRetriever(Configuration* config = 0);
+    CurrentUserRetriever(Model* model, Configuration* config = 0);
     User currentUser() const;
 
 protected:
@@ -20,6 +22,7 @@ protected:
 
 private:
     User current_;
+    Model* model_;
 };
 
 }
