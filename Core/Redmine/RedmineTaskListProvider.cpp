@@ -34,7 +34,7 @@ JobPointer enqueue(T t) {
 
 template<typename T>
 JobPointer enqueueRaw(Weaver* weaver, T* t) {
-    return ManagedJobPointer(t);
+    return ManagedJobPointer<T>(t);
 }
 
 }
