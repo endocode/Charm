@@ -48,7 +48,7 @@ void Retriever::setSuccess(bool success)
 QUrlQuery Retriever::setupQuery()
 {
     QUrlQuery query;
-    query.addQueryItem("key", configuration_->apiKey());
+    //query.addQueryItem("key", configuration_->apiKey());
     return query;
 }
 
@@ -62,9 +62,11 @@ void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread* th)
     QUrl url = configuration_->server();
     url.setPath(url.path() + path());
     url.setQuery(setupQuery());
+    QNetworkRequest request(url);
+    request.setRawHeader(QByteArray("X-Redmine-API-Key"), configuration_->apiKey().toLocal8Bit());
     {
         QMutexLocker l(&mutex_);
-        reply_ = manager.get(QNetworkRequest(url));
+        reply_ = manager.get(request);
     }
     QObject::connect(reply_, SIGNAL(finished()), &loop, SLOT(quit()));
     QObject::connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));

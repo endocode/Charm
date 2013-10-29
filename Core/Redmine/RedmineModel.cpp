@@ -47,26 +47,26 @@ Model::Model()
 
 const User &Model::currentUser() const
 {
-    LOCK_READ
+    LOCK_READ;
     return d->me_;
 }
 
 void Model::setCurrentUser(const User &me)
 {
-    LOCK_WRITE
+    LOCK_WRITE;
     d->me_ = me;
 }
 
 void Model::setUsers(const QVector<User> &users)
 {
-    LOCK_WRITE
+    LOCK_WRITE;
     d->users_.clear();
     std::copy(users.begin(), users.end(), std::inserter(d->users_, d->users_.begin()));
 }
 
 void Model::setIssueStatuses(const QVector<Status> &statuses)
 {
-    LOCK_WRITE
+    LOCK_WRITE;
     d->statuses_.clear();
     std::copy(statuses.begin(), statuses.end(), std::inserter(d->statuses_, d->statuses_.begin()));
 }
