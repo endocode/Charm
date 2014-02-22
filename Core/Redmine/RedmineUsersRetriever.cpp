@@ -4,6 +4,8 @@
 #include <QJsonArray>
 #include <QVector>
 
+#include <Core/Logging/Macros.h>
+
 #include "RedmineUsersRetriever.h"
 #include "RedmineParser.h"
 #include "RedmineModel.h"
@@ -20,6 +22,7 @@ UsersRetriever::UsersRetriever(Model *model, Configuration *config)
 
 void UsersRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thread)
 {
+    TRACE(QObject::tr("UsersRetriever::run: retrieving all users."));
     WindowRetriever::run(job, thread);
     if (!success()) {
         setSuccess(false);
@@ -28,6 +31,7 @@ void UsersRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thr
     QJsonParseError jsonParseError;
     const QJsonDocument jsonDoc =QJsonDocument::fromJson(data(), &jsonParseError);
     if (jsonParseError.error != QJsonParseError::NoError) {
+        DEBUG(QObject::tr("UsersRetriever::run: JSON document format error"));
         setSuccess(false);
         return;
     }
@@ -42,6 +46,7 @@ void UsersRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thr
     std::transform(usersArray.begin(), usersArray.end(), std::back_inserter(users),
                    [this](const QJsonValue& v) { return Parser::parseUser(v.toObject()); } );
     model_->setUsers(users);
+    TRACE(QObject::tr("UsersRetriever::run: done (%1 users), model updated.").arg(users.size()));
 }
 
 }
