@@ -7,6 +7,7 @@
 #include <QVector>
 
 #include <Core/User.h>
+#include <Core/Task.h>
 #include <Core/Redmine/IssueStatus.h>
 #include <Core/Logging/Macros.h>
 
@@ -37,6 +38,7 @@ public:
     StatusSet statuses_;
     UserSet users_;
     User me_;
+    TaskList tasks_;
     QReadWriteLock lock_;
 };
 
@@ -69,6 +71,18 @@ void Model::setIssueStatuses(const QVector<Status> &statuses)
     LOCK_WRITE;
     d->statuses_.clear();
     std::copy(statuses.begin(), statuses.end(), std::inserter(d->statuses_, d->statuses_.begin()));
+}
+
+void Model::appendTasks(const TaskList &tasks)
+{
+    LOCK_WRITE;
+    d->tasks_.append(tasks);
+}
+
+TaskList Model::tasks() const
+{
+    LOCK_READ;
+    return d->tasks_;
 }
 
 }

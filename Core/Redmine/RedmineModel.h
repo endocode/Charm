@@ -1,6 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <Core/Task.h>
 #include <Core/User.h>
 #include <Core/Redmine/IssueStatus.h>
 
@@ -17,7 +18,9 @@ public:
     void setCurrentUser(const User& me);
     void setUsers(const QVector<User>& users);
     void setIssueStatuses(const QVector<Status>& statuses);
+    void appendTasks(const TaskList& tasks);
 
+    TaskList tasks() const;
 private:
     class Private;
     Private* const d;
