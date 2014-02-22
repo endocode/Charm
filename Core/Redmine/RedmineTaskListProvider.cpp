@@ -33,27 +33,35 @@ void TaskListProvider::synchronize(Model* model)
     // Phase 1: the jobs that need be be performed before the issues can be processed:
     Collection* phase1(new Collection());
     *phase1 << new CurrentUserRetriever(model, configuration_)
-            << new UsersRetriever(model, configuration_)
+               // Only admin users may do this:
+               // << new UsersRetriever(model, configuration_)
             << new StatusRetriever(model, configuration_);
     // trackers
     // roles
     // project memberships
     // groups
     // Phase 2: mass-download of issues and projects:
+    auto issuesRetriever = new IssuesRetriever(model, configuration_);
     Collection* phase2(new Collection());
-    *phase2 << make_job( [this]() { DEBUG(QObject::tr("This would be phase 2.")); } );
+    *phase2 << issuesRetriever;
     // Phase 3: prepare task list for merge:
     Collection* phase3(new Collection());
+    *phase3 << make_job( [this]() { DEBUG(QObject::tr("This would be phase 3.")); } );
 
     Sequence* sequence(new Sequence());
     *sequence
             << make_job( [this]() { DEBUG(QObject::tr("Initiating phase 1.")); } )
             << phase1
-            << make_job( [this](){ verifyPhase1(); } )
+            << make_job( [this]() { DEBUG(QObject::tr("Phase 1 complete.")); } )
+            << make_job( [this]() { verifyPhase1(); } )
+            << make_job( [this]() { DEBUG(QObject::tr("Initiating phase 2.")); } )
             << phase2
+            << make_job( [this]() { DEBUG(QObject::tr("Phase 2 complete.")); } )
             << make_job( [this](){ verifyPhase2(); } )
+            << make_job( [this]() { DEBUG(QObject::tr("Initiating phase 3.")); } )
             << phase3
-            << make_job( [this](){ verifyPhase3(); } )
+            << make_job( [this]() { DEBUG(QObject::tr("Phase 3 complete.")); } )
+            << make_job( [this]() { verifyPhase3(); } )
             << make_job( [this]() { DEBUG(QObject::tr("Model synchronization complete.")); } );
 
     QObjectDecorator* job(new QObjectDecorator(sequence));

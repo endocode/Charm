@@ -4,7 +4,7 @@ namespace Redmine {
 
 Configuration::Configuration(QObject *parent)
     : QObject(parent)
-    , network_(2 )
+    , network_(2)
 {
 }
 
