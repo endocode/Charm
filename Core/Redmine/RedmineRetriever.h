@@ -3,16 +3,15 @@
 
 #include <QMutex>
 
-#include <threadweaver/Job.h>
+#include <threadweaver/Collection.h>
 #include <Core/Redmine/RedmineConfiguration.h>
 
 class QNetworkReply;
 
 namespace Redmine {
 
-//FIXME make model_ a member of Retriever?
 /** @brief Retriever implements accessing the Redmine API based on the given configuration. */
-class Retriever : public ThreadWeaver::Job
+class Retriever : public ThreadWeaver::Collection
 {
 public:
     Retriever(Configuration* config = 0);
