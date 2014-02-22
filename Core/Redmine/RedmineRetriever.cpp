@@ -17,7 +17,7 @@ Retriever::Retriever(Configuration *config)
     , success_(false)
     , reply_(0)
 {
-    assignQueuePolicy(configuration_->network());
+//    assignQueuePolicy(configuration_->network());
 }
 
 QString Retriever::path() const
@@ -95,6 +95,11 @@ void Retriever::requestAbort()
     } else {
         TRACE(QObject::tr("Retriever::requestAbort: no current network  operations."));
     }
+}
+
+Configuration *Retriever::configuration() const
+{
+    return configuration_;
 }
 
 int thread_id(ThreadWeaver::Thread *th)

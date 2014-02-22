@@ -26,6 +26,8 @@ protected:
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread) override;
     void requestAbort() override;
 
+    Configuration* configuration() const;
+
 private:
     Configuration* configuration_;
     QString path_;
