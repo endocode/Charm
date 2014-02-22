@@ -78,8 +78,11 @@ void RedmineNetworkingTests::testRetriever()
 
 void RedmineNetworkingTests::testIssuesRetriever()
 {
+    using namespace Redmine;
+    using namespace ThreadWeaver;
     Redmine::IssuesRetriever retriever(configuration());
-    retriever.blockingExecute();
+    stream() << retriever;
+    Queue::instance()->finish();
     QCOMPARE(retriever.success(), true);
 
     TaskList tasks;
