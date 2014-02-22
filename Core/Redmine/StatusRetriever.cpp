@@ -13,15 +13,15 @@ StatusRetriever::StatusRetriever(Model* model, Configuration* configuration)
     setPath("/issue_statuses.json");
 }
 
-QVector<Status> StatusRetriever::statuses() const
+QVector<Redmine::Status> StatusRetriever::statuses() const
 {
     return statuses_;
 }
 
-Status StatusRetriever::status(Status::Id id) const
+Redmine::Status StatusRetriever::status(Redmine::Status::Id id) const
 {
     //FIXME use a status set that compares by Id
-    Q_FOREACH(const Status& status, statuses_) {
+    Q_FOREACH(const Redmine::Status& status, statuses_) {
         if (status.id() == id) {
             return status;
         }

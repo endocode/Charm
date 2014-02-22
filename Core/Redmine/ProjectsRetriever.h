@@ -2,10 +2,10 @@
 #define PROJECTSRETRIEVER_H
 
 #include <threadweaver/Job.h>
-#include <Redmine/RedmineConfiguration.h>
+#include <Core/Redmine/RedmineConfiguration.h>
 
-#include "Task.h"
-#include "WindowRetriever.h"
+#include "Core/Task.h"
+#include "Core/Redmine/WindowRetriever.h"
 
 namespace Redmine {
 

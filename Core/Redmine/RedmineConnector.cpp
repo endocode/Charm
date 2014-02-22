@@ -39,7 +39,7 @@ Connector::Connector(QObject *parent)
 Connector::~Connector()
 {
     timer_.stop();
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 }
 
 void Connector::triggerModelSynchronization()

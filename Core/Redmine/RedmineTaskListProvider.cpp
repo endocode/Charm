@@ -1,10 +1,4 @@
 #include <threadweaver/ThreadWeaver.h>
-#include <threadweaver/JobPointer.h>
-#include <threadweaver/QObjectDecorator.h>
-#include <threadweaver/JobCollection.h>
-#include <threadweaver/JobSequence.h>
-#include <threadweaver/ManagedJobPointer.h>
-#include <threadweaver/Lambda.h>
 
 #include <Core/Task.h>
 
@@ -17,27 +11,6 @@
 #include "StatusRetriever.h"
 
 #include <Core/Logging/Macros.h>
-
-namespace ThreadWeaver {
-
-template<typename T>
-JobPointer enqueue(Weaver* weaver, T t) {
-    JobPointer ret(new Lambda<T>(t));
-    weaver->enqueue(ret);
-    return ret;
-}
-
-template<typename T>
-JobPointer enqueue(T t) {
-    return enqueue(Weaver::instance(), t);
-}
-
-template<typename T>
-JobPointer enqueueRaw(Weaver* weaver, T* t) {
-    return ManagedJobPointer<T>(t);
-}
-
-}
 
 namespace Redmine {
 
@@ -55,42 +28,60 @@ TaskList TaskListProvider::tasks() const
 
 void TaskListProvider::synchronize(Model* model)
 {
-    ThreadWeaver::QObjectDecorator* sequence(new ThreadWeaver::QObjectDecorator(new ThreadWeaver::JobSequence()));
+    using namespace ThreadWeaver;
+
     // Phase 1: the jobs that need be be performed before the issues can be processed:
-    QSharedPointer<ThreadWeaver::JobCollection> phase1(new ThreadWeaver::JobCollection());
-    phase1->addJob(ThreadWeaver::JobPointer(new CurrentUserRetriever(model, configuration_)));
-    phase1->addJob(ThreadWeaver::JobPointer(new UsersRetriever(model, configuration_)));
-    phase1->addJob(ThreadWeaver::JobPointer(new StatusRetriever(model, configuration_)));
-
-//    Collection phase1;
-//    phase1 << new CurrentUserRetriever(model, configuration_)
-//           << new UsersRetriever(model, configuration_)
-//           << new StatusRetriever(model, configuration_);
-//    sequence << phase1;
-
+    Collection* phase1(new Collection());
+    *phase1 << new CurrentUserRetriever(model, configuration_)
+            << new UsersRetriever(model, configuration_)
+            << new StatusRetriever(model, configuration_);
     // trackers
     // roles
     // project memberships
     // groups
     // Phase 2: mass-download of issues and projects:
-    // ...
+    Collection* phase2(new Collection());
+    *phase2 << make_job( [this]() { DEBUG(QObject::tr("This would be phase 2.")); } );
     // Phase 3: prepare task list for merge:
-    // ...
-    // ThreadWeaver::enqueue( [this]() { performUpdate(); } );
-    sequence->sequence()->addJob(phase1);
-    connect(sequence, SIGNAL(done(ThreadWeaver::JobPointer)), SIGNAL(completed()));
-    connect(sequence, SIGNAL(failed(ThreadWeaver::JobPointer)), SIGNAL(error()));
-    ThreadWeaver::Weaver::instance()->enqueue(ThreadWeaver::JobPointer(sequence));
+    Collection* phase3(new Collection());
+
+    Sequence* sequence(new Sequence());
+    *sequence
+            << make_job( [this]() { DEBUG(QObject::tr("Initiating phase 1.")); } )
+            << phase1
+            << make_job( [this](){ verifyPhase1(); } )
+            << phase2
+            << make_job( [this](){ verifyPhase2(); } )
+            << phase3
+            << make_job( [this](){ verifyPhase3(); } )
+            << make_job( [this]() { DEBUG(QObject::tr("Model synchronization complete.")); } );
+
+    QObjectDecorator* job(new QObjectDecorator(sequence));
+    connect(job, SIGNAL(done(ThreadWeaver::JobPointer)), SIGNAL(completed()));
+    connect(job, SIGNAL(failed(ThreadWeaver::JobPointer)), SIGNAL(error()));
+//    ThreadWeaver::Queueing::enqueue(&mutex_); // this does not (and should not) compile
+    ThreadWeaver::enqueue(job);
 }
 
 void TaskListProvider::abortCurrentSynchronization()
 {
     //FIXME we should keep a JobPointer to the currently executing sequence, and only requestAbort() this one:
-    ThreadWeaver::Weaver::instance()->requestAbort();
+    ThreadWeaver::Queue::instance()->requestAbort();
 }
 
-void TaskListProvider::performUpdate()
+void TaskListProvider::verifyPhase1()
 {
+    DEBUG(QObject::tr("Phase 1 downloads completed, verifying..."));
+}
+
+void TaskListProvider::verifyPhase2()
+{
+    DEBUG(QObject::tr("Phase 2 finished, issues and projects downloaded. Building model."));
+}
+
+void TaskListProvider::verifyPhase3()
+{
+    DEBUG(QObject::tr("Phase 3 complete, updating model and handing over to application."));
 //    DEBUG(tr("TaskListProvider::performUpdate: updating..."));
 //    // Retrieve current user:
 //    Redmine::CurrentUserRetriever currentUser(configuration_);
@@ -165,7 +156,7 @@ void TaskListProvider::performUpdate()
 //        QMutexLocker l(&mutex_);
 //        tasks_ = tasks;
 //    }
-//    emit completed();
+    //    emit completed();
 }
 
 }

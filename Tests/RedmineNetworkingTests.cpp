@@ -41,7 +41,7 @@ private:
 
 RedmineNetworkingTests::RedmineNetworkingTests()
 {
-    QCoreApplication::instance()->setOrganizationName("Endocode AG");
+    QCoreApplication::instance()->setOrganizationName("Endocode_AG");
     QCoreApplication::instance()->setOrganizationDomain("endocode.com");
     QCoreApplication::instance()->setApplicationName("RedmineNetworkingTests");
     log.setupLogging(Logging::Facility::LogLevel_Trace);
@@ -141,8 +141,8 @@ void RedmineNetworkingTests::testTaskListProvider()
     provider.synchronize(&model);
     loop.exec();
     QVERIFY(errorSpy.count() == 0);
-    TRACE(tr("Retrieved %1 tasks").arg(provider.tasks().count()));
-    ThreadWeaver::Weaver::instance()->finish();
+    TRACE(tr("RedmineNetworkingTests::testTaskListProvider: Retrieved %1 tasks").arg(provider.tasks().count()));
+    ThreadWeaver::Queue::instance()->finish();
 }
 
 void RedmineNetworkingTests::testAbortConnections()

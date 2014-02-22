@@ -29,7 +29,9 @@ public Q_SLOTS:
     void abortCurrentSynchronization();
 
 private:
-    void performUpdate();
+    void verifyPhase1();
+    void verifyPhase2();
+    void verifyPhase3();
     Configuration* configuration_;
     TaskList tasks_;
     mutable QMutex mutex_;

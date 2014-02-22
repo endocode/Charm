@@ -4,7 +4,7 @@
 #include <QMutex>
 
 #include <threadweaver/Job.h>
-#include <Redmine/RedmineConfiguration.h>
+#include <Core/Redmine/RedmineConfiguration.h>
 
 class QNetworkReply;
 
@@ -35,6 +35,9 @@ private:
     QNetworkReply* reply_;
     QMutex mutex_;
 };
+
+/** @brief Return the numeric id of the thread, or zero if th is zero. */
+int thread_id(ThreadWeaver::Thread* th);
 
 }
 

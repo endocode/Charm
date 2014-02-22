@@ -34,7 +34,7 @@ private:
 
 RedmineConnectorTests::RedmineConnectorTests()
 {
-    QCoreApplication::instance()->setOrganizationName("Endocode AG");
+    QCoreApplication::instance()->setOrganizationName("Endocode_AG");
     QCoreApplication::instance()->setOrganizationDomain("endocode.com");
     QCoreApplication::instance()->setApplicationName("RedmineConnectorTests");
     log.setupLogging(Logging::Facility::LogLevel_Trace);
@@ -97,8 +97,8 @@ void RedmineConnectorTests::testParseSampleIssueStatuses()
     auto cmp = [](const Status& left, const Status& right) { return left.id() < right.id(); };
     std::set<Status, decltype(cmp)> statuses(cmp);
     auto parse_status = [](const QJsonValue& element) {
-        Status status = Parser::parseStatus(element.toObject());
-        QVERIFY(status.isValid());
+        auto status = Parser::parseStatus(element.toObject());
+        Q_ASSERT(status.isValid());
         return status;
     };
     std::transform(statusesArray.begin(), statusesArray.end(), std::inserter(statuses, statuses.begin()), parse_status);

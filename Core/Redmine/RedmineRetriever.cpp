@@ -17,7 +17,7 @@ Retriever::Retriever(Configuration *config)
     , success_(false)
     , reply_(0)
 {
-//    assignQueuePolicy(configuration_->network());
+    assignQueuePolicy(configuration_->network());
 }
 
 QString Retriever::path() const
@@ -48,17 +48,16 @@ void Retriever::setSuccess(bool success)
 QUrlQuery Retriever::setupQuery()
 {
     QUrlQuery query;
-    //query.addQueryItem("key", configuration_->apiKey());
     return query;
 }
 
 void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread* th)
 {
     Q_ASSERT(reply_ == 0);
-    TRACE(QObject::tr("Retriever::run[%1]: initiating API query.").arg(th->id()));
+    TRACE(QObject::tr("Retriever::run[%1]: initiating API query.").arg(thread_id(th)));
     QNetworkAccessManager manager;
     QEventLoop loop;
-    // QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+//    QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
     QUrl url = configuration_->server();
     url.setPath(url.path() + path());
     url.setQuery(setupQuery());
@@ -71,14 +70,14 @@ void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread* th)
     QObject::connect(reply_, SIGNAL(finished()), &loop, SLOT(quit()));
     QObject::connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
     loop.exec();
-    DEBUG(QObject::tr("Retriever::run[%1]: fetching URL %2").arg(th->id()).arg(url.toString()));
+    DEBUG(QObject::tr("Retriever::run[%1]: fetching URL %2").arg(thread_id(th)).arg(url.toString()));
     if (reply_->error() == QNetworkReply::NoError) {
         setSuccess(true);
         data_ = reply_->readAll();
-        DEBUG(QObject::tr("Retriever::run[%1]: success, received %2 bytes").arg(th->id()).arg(data_.count()));
+        DEBUG(QObject::tr("Retriever::run[%1]: success, received %2 bytes").arg(thread_id(th)).arg(data_.count()));
     } else {
         setSuccess(false);
-        DEBUG(QObject::tr("Retriever::run[%1]: error: %2").arg(th->id()).arg(reply_->errorString()));
+        DEBUG(QObject::tr("Retriever::run[%1]: error: %2").arg(thread_id(th)).arg(reply_->errorString()));
     }
     {
         QMutexLocker l(&mutex_);
@@ -95,6 +94,15 @@ void Retriever::requestAbort()
         reply_->abort();
     } else {
         TRACE(QObject::tr("Retriever::requestAbort: no current network  operations."));
+    }
+}
+
+int thread_id(ThreadWeaver::Thread *th)
+{
+    if (th) {
+        return th->id();
+    } else {
+        return 0;
     }
 }
 

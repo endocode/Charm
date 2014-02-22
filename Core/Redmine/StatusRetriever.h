@@ -3,9 +3,9 @@
 
 #include <QVector>
 
+#include <Core/Redmine/IssueStatus.h>
 #include <Core/Redmine/RedmineConfiguration.h>
 #include <Core/Redmine/RedmineRetriever.h>
-#include <Core/Redmine/IssueStatus.h>
 
 namespace Redmine {
 
@@ -16,14 +16,14 @@ class StatusRetriever : public Retriever
 {
 public:
     StatusRetriever(Model* model, Configuration* config = 0);
-    QVector<Status> statuses() const;
-    Status status(Status::Id id) const;
+    QVector<Redmine::Status> statuses() const;
+    Redmine::Status status(Redmine::Status::Id id) const;
 
 protected:
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread) override;
 
 private:
-    QVector<Status> statuses_;
+    QVector<Redmine::Status> statuses_;
     Model* model_;
 };
 
