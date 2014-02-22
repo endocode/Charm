@@ -7,28 +7,30 @@
 #include "Core/Task.h"
 #include "Core/User.h"
 #include "Core/Redmine/WindowRetriever.h"
+#include "Core/Redmine/RedmineModel.h"
 
 namespace Redmine {
 
-/** @brief IssuesRetriever extends WindowRetriever to receive Redmine issues JSON data. */
+/** @brief IssuesRetriever extends WindowRetriever to receive Redmine issues JSON data.
+ *  Issues are downloaded from Redmine in chunks (windows). IssueRetriever is a Collection that
+ *  retrieves the first window, and then generates job elements to retrieve the remaining issues.
+ */
 class IssuesRetriever : public WindowRetriever
 {
 public:
-    IssuesRetriever(Configuration* config = 0);
+    explicit IssuesRetriever(Model* model, Configuration* config);
     void setCurrentUser(const User& user);
     User currentUser() const;
-
-    int count() const;
-    TaskList issues() const;
-
 
 protected:
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread) override;
     QUrlQuery setupQuery() override;
 
+    virtual void setupSubwindowQueries();
+
 private:
-    TaskList issues_;
     User me_;
+    Model* model_;
 };
 
 }

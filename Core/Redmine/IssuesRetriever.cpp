@@ -4,13 +4,27 @@
 #include <QJsonArray>
 #include <QUrlQuery>
 
+#include <ThreadWeaver/Thread>
+
+#include <Core/Logging/Macros.h>
+
+#include "RedmineModel.h"
 #include "IssuesRetriever.h"
 #include "RedmineParser.h"
 
 namespace Redmine {
 
-IssuesRetriever::IssuesRetriever(Configuration* config)
+class IssueSubwindowRetriever : public IssuesRetriever {
+public:
+    explicit IssueSubwindowRetriever(Model* model, Configuration* config) : IssuesRetriever(model, config) {}
+protected:
+    void setupSubwindowQueries() override {}
+};
+
+
+IssuesRetriever::IssuesRetriever(Model *model, Configuration* config)
     : WindowRetriever(config)
+    , model_(model)
 {
     setPath("/issues.json");
 }
@@ -23,16 +37,6 @@ void IssuesRetriever::setCurrentUser(const User &user)
 User IssuesRetriever::currentUser() const
 {
     return me_;
-}
-
-int IssuesRetriever::count() const
-{
-    return issues_.count();
-}
-
-TaskList IssuesRetriever::issues() const
-{
-    return issues_;
 }
 
 void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thread)
@@ -53,8 +57,11 @@ void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
         setSuccess(false);
         return;
     }
-    std::transform(issuesArray.begin(), issuesArray.end(), std::back_inserter(issues_),
+    TaskList issues;
+    std::transform(issuesArray.begin(), issuesArray.end(), std::back_inserter(issues),
                    [this](const QJsonValue& v) { return Parser::parseIssue(v.toObject(), currentUser()); } );
+    model_->appendTasks(issues);
+    setupSubwindowQueries();
 }
 
 QUrlQuery IssuesRetriever::setupQuery()
@@ -63,6 +70,20 @@ QUrlQuery IssuesRetriever::setupQuery()
     query.addQueryItem("status_id", "*");
     query.addQueryItem("include", "journals");
     return query;
+}
+
+void IssuesRetriever::setupSubwindowQueries()
+{
+    // create further requests for the remaining issues:
+    if (limit() < total()) {
+        for(int current = offset() + limit(); current < total(); current += limit() ) {
+            auto chunk = new IssueSubwindowRetriever(model_, configuration());
+            chunk->setCurrentUser(me_);
+            chunk->setWindow(current, limit());
+            // DEBUG(QObject::tr("Adding job for window [%1, %2].").arg(current).arg(limit()));
+            *this << chunk;
+        }
+    }
 }
 
 }
