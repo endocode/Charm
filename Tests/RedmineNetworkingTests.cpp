@@ -2,6 +2,7 @@
 #include <QtTest>
 #include <QCoreApplication>
 #include <threadweaver/ThreadWeaver.h>
+#include <threadweaver/debuggingaids.h>
 
 #include <Core/Redmine/RedmineConfiguration.h>
 #include <Core/Redmine/RedmineRetriever.h>
@@ -41,6 +42,7 @@ private:
 
 RedmineNetworkingTests::RedmineNetworkingTests()
 {
+//    ThreadWeaver::setDebugLevel(true, 2);
     QCoreApplication::instance()->setOrganizationName("Endocode_AG");
     QCoreApplication::instance()->setOrganizationDomain("endocode.com");
     QCoreApplication::instance()->setApplicationName("RedmineNetworkingTests");
@@ -80,23 +82,13 @@ void RedmineNetworkingTests::testIssuesRetriever()
 {
     using namespace Redmine;
     using namespace ThreadWeaver;
-    Redmine::IssuesRetriever retriever(configuration());
+    Redmine::Model model;
+    Redmine::IssuesRetriever retriever(&model, configuration());
     stream() << retriever;
     Queue::instance()->finish();
     QCOMPARE(retriever.success(), true);
-
-    TaskList tasks;
-    tasks << retriever.issues();
-    if (retriever.limit() < retriever.total()) {
-        for(int current = retriever.offset() + retriever.limit(); current < retriever.total(); current += retriever.limit() ) {
-            Redmine::IssuesRetriever chunk(configuration());
-            chunk.setWindow(current, retriever.limit());
-            chunk.blockingExecute();
-            QCOMPARE(chunk.success(), true);
-            tasks << chunk.issues();
-        }
-    }
-    TRACE(tr("Retrieved %1 issues").arg(tasks.count()));
+    QCOMPARE(model.tasks().count(), 10002);
+    TRACE(tr("RedmineNetworkingTests::testIssuesRetriever: Tasks retrieved: %1").arg(model.tasks().count()));
 }
 
 void RedmineNetworkingTests::testStatusRetriever()
