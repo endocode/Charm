@@ -141,8 +141,8 @@ void RedmineNetworkingTests::testTaskListProvider()
     provider.synchronize(&model);
     loop.exec();
     QVERIFY(errorSpy.count() == 0);
-    TRACE(tr("RedmineNetworkingTests::testTaskListProvider: Retrieved %1 tasks").arg(provider.tasks().count()));
     ThreadWeaver::Queue::instance()->finish();
+    TRACE(tr("RedmineNetworkingTests::testTaskListProvider: Retrieved %1 tasks").arg(provider.tasks().count()));
 }
 
 void RedmineNetworkingTests::testAbortConnections()

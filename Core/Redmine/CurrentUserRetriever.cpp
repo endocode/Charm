@@ -40,7 +40,7 @@ void CurrentUserRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Threa
     const QJsonObject json = jsonDoc.object();
     const QJsonObject user = json["user"].toObject();
     model_->setCurrentUser(Parser::parseUser(user));
-    TRACE(QObject::tr("CurrentUserRetriever::run: done, model updated."));
+    TRACE(QObject::tr("CurrentUserRetriever::run: done (current user: %1), model updated.").arg(model_->currentUser().name()));
 }
 
 
