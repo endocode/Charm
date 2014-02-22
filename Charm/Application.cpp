@@ -69,8 +69,8 @@ Application::Application(int& argc, char** argv)
     setQuitOnLastWindowClosed(false);
     // application metadata setup
     // note that this modifies the behaviour of QSettings:
-    QCoreApplication::setOrganizationName("KDAB");
-    QCoreApplication::setOrganizationDomain("kdab.com");
+    QCoreApplication::setOrganizationName("Endocode_AG");
+    QCoreApplication::setOrganizationDomain("endocode.com");
     QCoreApplication::setApplicationName("Charm");
     QCoreApplication::setApplicationVersion(CHARM_VERSION);
 
