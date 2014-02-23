@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QScopedPointer>
 
 #include <Core/Redmine/RedmineModel.h>
 #include <Core/Task.h>
@@ -31,9 +32,8 @@ private Q_SLOTS:
 private:
     void handleUpdateFinished();
 
-    TaskListProvider modelSynchronizer_;
+    QScopedPointer<TaskListProvider> modelSynchronizer_;
     QTimer timer_;
-    Model model_;
     Configuration configuration_;
 };
 

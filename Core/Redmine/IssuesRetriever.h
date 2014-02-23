@@ -19,8 +19,6 @@ class IssuesRetriever : public WindowRetriever
 {
 public:
     explicit IssuesRetriever(Model* model, Configuration* config);
-    void setCurrentUser(const User& user);
-    User currentUser() const;
 
 protected:
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread) override;
@@ -29,7 +27,6 @@ protected:
     virtual void setupSubwindowQueries();
 
 private:
-    User me_;
     Model* model_;
 };
 

@@ -12,7 +12,6 @@ namespace Redmine {
 
 Connector::Connector(QObject *parent)
     : QObject(parent)
-    , modelSynchronizer_(&configuration_)
 {
     const QString server = qgetenv("CHARM_REDMINE_SERVER");
     if (server.isEmpty()) {
@@ -31,28 +30,30 @@ Connector::Connector(QObject *parent)
     timer_.setInterval(15 * 1000);
     timer_.start();
     connect(&timer_, SIGNAL(timeout()), SLOT(triggerModelSynchronization()));
-    connect(&modelSynchronizer_, SIGNAL(completed()), SLOT(synchronizationCompleted()), Qt::QueuedConnection);
-    connect(&modelSynchronizer_, SIGNAL(error()), SLOT(synchronizationAborted()), Qt::QueuedConnection);
-
 }
 
 Connector::~Connector()
 {
     timer_.stop();
+    //FIXME requestAbort()
     ThreadWeaver::Queue::instance()->finish();
 }
 
 void Connector::triggerModelSynchronization()
 {
     DEBUG("Connector::triggerModelSynchronization: starting model synchronization");
-    //FIXME treat synchronizer like a job?
-    modelSynchronizer_.synchronize(&model_);
+    Q_ASSERT(modelSynchronizer_ == 0);
+    modelSynchronizer_.reset(new TaskListProvider(&configuration_));
+    connect(modelSynchronizer_.data(), SIGNAL(completed()), SLOT(synchronizationCompleted()), Qt::QueuedConnection);
+    connect(modelSynchronizer_.data(), SIGNAL(error()), SLOT(synchronizationAborted()), Qt::QueuedConnection);
+    modelSynchronizer_->downloadModelData();
 }
 
 void Connector::synchronizationCompleted()
 {
     DEBUG("Connector::updateCompleted: success.");
-    emit updatedTaskList(modelSynchronizer_.tasks());
+    emit updatedTaskList(modelSynchronizer_->model()->tasks());
+    modelSynchronizer_.reset(0);
     timer_.setInterval(15 * 60 * 1000);
     handleUpdateFinished();
 }
@@ -62,6 +63,7 @@ void Connector::synchronizationAborted()
     QString message = "I have no message for you yet, FIXME";
     DEBUG(tr("Connector::updateAborted: error: %1").arg(message));
     emit connectorError(message);
+    modelSynchronizer_.reset(0);
     timer_.setInterval(60 * 60 * 1000);
     handleUpdateFinished();
 }

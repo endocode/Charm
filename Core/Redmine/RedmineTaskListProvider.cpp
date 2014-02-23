@@ -20,55 +20,51 @@ TaskListProvider::TaskListProvider(Configuration *config, QObject *parent)
 {
 }
 
-TaskList TaskListProvider::tasks() const
-{
-    QMutexLocker l(&mutex_);
-    return tasks_;
-}
-
-void TaskListProvider::synchronize(Model* model)
+void TaskListProvider::downloadModelData()
 {
     using namespace ThreadWeaver;
 
-    // Phase 1: the jobs that need be be performed before the issues can be processed:
-    Collection* phase1(new Collection());
-    *phase1 << new CurrentUserRetriever(model, configuration_)
+    // Phase 1: the jobs that need be be performed before issues and projects can be downloaded
+    //          (for example, the current user needs to be known when parsing the issues):
+    phase1_ << new CurrentUserRetriever(&model_, configuration_)
                // Only admin users may do this:
                // << new UsersRetriever(model, configuration_)
-            << new StatusRetriever(model, configuration_);
+            << new StatusRetriever(&model_, configuration_);
     // trackers
     // roles
     // project memberships
     // groups
     // Phase 2: mass-download of issues and projects:
-    auto issuesRetriever = new IssuesRetriever(model, configuration_);
-    Collection* phase2(new Collection());
-    *phase2 << issuesRetriever;
+    phase2_ << new IssuesRetriever(&model_, configuration_)
+            << new ProjectsRetriever(&model_, configuration_);
     // Phase 3: prepare task list for merge:
-    Collection* phase3(new Collection());
-    *phase3 << make_job( [this]() { DEBUG(QObject::tr("This would be phase 3.")); } );
+    phase3_ << make_job( [this]() { DEBUG(QObject::tr("This would be phase 3.")); } );
 
-    Sequence* sequence(new Sequence());
-    *sequence
+    sequence_
             << make_job( [this]() { DEBUG(QObject::tr("Initiating phase 1.")); } )
-            << phase1
+            << phase1_
             << make_job( [this]() { DEBUG(QObject::tr("Phase 1 complete.")); } )
             << make_job( [this]() { verifyPhase1(); } )
             << make_job( [this]() { DEBUG(QObject::tr("Initiating phase 2.")); } )
-            << phase2
+            << phase2_
             << make_job( [this]() { DEBUG(QObject::tr("Phase 2 complete.")); } )
             << make_job( [this](){ verifyPhase2(); } )
             << make_job( [this]() { DEBUG(QObject::tr("Initiating phase 3.")); } )
-            << phase3
+            << phase3_
             << make_job( [this]() { DEBUG(QObject::tr("Phase 3 complete.")); } )
             << make_job( [this]() { verifyPhase3(); } )
             << make_job( [this]() { DEBUG(QObject::tr("Model synchronization complete.")); } );
 
-    QObjectDecorator* job(new QObjectDecorator(sequence));
+    QObjectDecorator* job(new QObjectDecorator(&sequence_, false));
     connect(job, SIGNAL(done(ThreadWeaver::JobPointer)), SIGNAL(completed()));
     connect(job, SIGNAL(failed(ThreadWeaver::JobPointer)), SIGNAL(error()));
-//    ThreadWeaver::Queueing::enqueue(&mutex_); // this does not (and should not) compile
-    ThreadWeaver::enqueue(job);
+
+    stream() << sequence_;
+}
+
+Model *TaskListProvider::model()
+{
+    return &model_;
 }
 
 void TaskListProvider::abortCurrentSynchronization()
@@ -80,6 +76,7 @@ void TaskListProvider::abortCurrentSynchronization()
 void TaskListProvider::verifyPhase1()
 {
     DEBUG(QObject::tr("Phase 1 downloads completed, verifying..."));
+    Q_ASSERT(model_.currentUser().isValid()); // the sequence should have been aborted otherwise
 }
 
 void TaskListProvider::verifyPhase2()

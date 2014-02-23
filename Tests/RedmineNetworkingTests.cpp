@@ -31,7 +31,7 @@ private Q_SLOTS:
     void testStatusRetriever();
     void testUsersRetriever();
     void testProjectsRetriever();
-    void testTaskListProvider();
+    void testModelDownload();
     void testAbortConnections();
     void testRedmineConnector();
 
@@ -118,40 +118,43 @@ void RedmineNetworkingTests::testProjectsRetriever()
     TRACE(tr("RedmineNetworkingTests::testProjectsRetriever: Projects retrieved: %1").arg(model.tasks().count()));
 }
 
-void RedmineNetworkingTests::testTaskListProvider()
+void RedmineNetworkingTests::testModelDownload()
 {
-    Redmine::Model model;
-    Redmine::TaskListProvider provider(configuration());
+    using namespace Redmine;
+
+    Model model;
+    TaskListProvider provider(configuration());
     QEventLoop loop;
     QSignalSpy errorSpy(&provider, SIGNAL(error()));
     connect(&provider, SIGNAL(completed()), &loop, SLOT(quit()));
     connect(&provider, SIGNAL(error()), &loop, SLOT(quit()));
-    provider.synchronize(&model);
+    provider.downloadModelData();
     loop.exec();
     QVERIFY(errorSpy.count() == 0);
     ThreadWeaver::Queue::instance()->finish();
-    TRACE(tr("RedmineNetworkingTests::testTaskListProvider: Retrieved %1 tasks").arg(provider.tasks().count()));
+    TRACE(tr("RedmineNetworkingTests::testTaskListProvider: Retrieved %1 tasks").arg(provider.model()->tasks().count()));
 }
 
 void RedmineNetworkingTests::testAbortConnections()
 {
-    Redmine::Model model;
-    Redmine::TaskListProvider provider(configuration());
-    QEventLoop loop;
-    QSignalSpy errorSpy(&provider, SIGNAL(error()));
-    connect(&provider, SIGNAL(completed()), &loop, SLOT(quit()));
-    connect(&provider, SIGNAL(error()), &loop, SLOT(quit()));
-    provider.synchronize(&model);
+    QFAIL("NI");
+//    Redmine::Model model;
+//    Redmine::TaskListProvider provider(configuration());
+//    QEventLoop loop;
+//    QSignalSpy errorSpy(&provider, SIGNAL(error()));
+//    connect(&provider, SIGNAL(completed()), &loop, SLOT(quit()));
+//    connect(&provider, SIGNAL(error()), &loop, SLOT(quit()));
+//    provider.downloadModelData(&model);
 
-    QTimer timer;
-    timer.singleShot(500, &provider, SLOT(abortCurrentOperations()));
-    loop.exec();
+//    QTimer timer;
+//    timer.singleShot(500, &provider, SLOT(abortCurrentOperations()));
+//    loop.exec();
 
-    QTest::qWait(2000);
-    qDebug() << errorSpy.count();
-    QTest::qWait(2000);
-    qDebug() << errorSpy.count();
-    QTest::qWait(2000);
+//    QTest::qWait(2000);
+//    qDebug() << errorSpy.count();
+//    QTest::qWait(2000);
+//    qDebug() << errorSpy.count();
+//    QTest::qWait(2000);
 }
 
 

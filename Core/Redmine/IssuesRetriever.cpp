@@ -29,18 +29,9 @@ IssuesRetriever::IssuesRetriever(Model *model, Configuration* config)
     setPath("/issues.json");
 }
 
-void IssuesRetriever::setCurrentUser(const User &user)
-{
-    me_ = user;
-}
-
-User IssuesRetriever::currentUser() const
-{
-    return me_;
-}
-
 void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thread)
 {
+    Q_ASSERT(model_->currentUser().isValid());
     WindowRetriever::run(job, thread);
     if (!success()) {
         return;
@@ -59,7 +50,7 @@ void IssuesRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *th
     }
     TaskList issues;
     std::transform(issuesArray.begin(), issuesArray.end(), std::back_inserter(issues),
-                   [this](const QJsonValue& v) { return Parser::parseIssue(v.toObject(), currentUser()); } );
+                   [this](const QJsonValue& v) { return Parser::parseIssue(v.toObject(), model_->currentUser()); } );
     model_->appendTasks(issues);
     setupSubwindowQueries();
 }
@@ -78,7 +69,6 @@ void IssuesRetriever::setupSubwindowQueries()
     if (limit() < total()) {
         for(int current = offset() + limit(); current < total(); current += limit() ) {
             auto chunk = new IssueSubwindowRetriever(model_, configuration());
-            chunk->setCurrentUser(me_);
             chunk->setWindow(current, limit());
             // DEBUG(QObject::tr("Adding job for window [%1, %2].").arg(current).arg(limit()));
             *this << chunk;
