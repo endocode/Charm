@@ -8,7 +8,7 @@
 #include <Core/Redmine/RedmineModel.h>
 #include <Core/Task.h>
 #include "RedmineConfiguration.h"
-#include "RedmineTaskListProvider.h"
+#include "ModelDownloader.h"
 
 namespace Redmine {
 

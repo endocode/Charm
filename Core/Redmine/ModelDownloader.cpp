@@ -2,7 +2,7 @@
 
 #include <Core/Task.h>
 
-#include "RedmineTaskListProvider.h"
+#include "ModelDownloader.h"
 
 #include "IssuesRetriever.h"
 #include "ProjectsRetriever.h"

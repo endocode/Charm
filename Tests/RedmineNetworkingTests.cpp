@@ -10,7 +10,7 @@
 #include <Core/Redmine/IssuesRetriever.h>
 #include <Core/Redmine/ProjectsRetriever.h>
 #include <Core/Redmine/StatusRetriever.h>
-#include <Core/Redmine/RedmineTaskListProvider.h>
+#include <Core/Redmine/ModelDownloader.h>
 #include <Core/Redmine/RedmineConnector.h>
 #include <Core/Redmine/RedmineModel.h>
 

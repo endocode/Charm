@@ -32,7 +32,7 @@ SET(
     Redmine/WindowRetriever.cpp
     Redmine/IssuesRetriever.cpp
     Redmine/ProjectsRetriever.cpp
-    Redmine/RedmineTaskListProvider.cpp
+    Redmine/ModelDownloader.cpp
     Redmine/RedmineUsersRetriever.cpp
     Redmine/CurrentUserRetriever.cpp
     Redmine/StatusRetriever.cpp
