@@ -9,20 +9,18 @@
 
 namespace Redmine {
 
-ProjectsRetriever::ProjectsRetriever(Configuration* config)
+class ProjectsSubwindowRetriever : public ProjectsRetriever {
+public:
+    explicit ProjectsSubwindowRetriever(Model* model, Configuration* config) : ProjectsRetriever(model, config) {}
+protected:
+    void setupSubwindowQueries() override {}
+};
+
+ProjectsRetriever::ProjectsRetriever(Model *model, Configuration* config)
     : WindowRetriever(config)
+    , model_(model)
 {
     setPath("/projects.json");
-}
-
-int ProjectsRetriever::count()
-{
-    return projects_.count();
-}
-
-TaskList ProjectsRetriever::projects() const
-{
-    return projects_;
 }
 
 void ProjectsRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *thread)
@@ -43,10 +41,24 @@ void ProjectsRetriever::run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread *
         setSuccess(false);
         return;
     }
+    TaskList projects_;
     std::transform(projectsArray.begin(), projectsArray.end(), std::back_inserter(projects_),
                    [this](const QJsonValue& v) { return Parser::parseProject(v.toObject()); } );
+    model_->appendTasks(projects_);
+    setupSubwindowQueries();
 }
 
+void ProjectsRetriever::setupSubwindowQueries()
+{
+    // create further requests for the remaining issues:
+    if (limit() < total()) {
+        for(int current = offset() + limit(); current < total(); current += limit() ) {
+            auto chunk = new ProjectsSubwindowRetriever(model_, configuration());
+            chunk->setWindow(current, limit());
+            *this << chunk;
+        }
+    }
 
+}
 
 }

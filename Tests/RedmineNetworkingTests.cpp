@@ -87,8 +87,8 @@ void RedmineNetworkingTests::testIssuesRetriever()
     stream() << retriever;
     Queue::instance()->finish();
     QCOMPARE(retriever.success(), true);
-    QCOMPARE(model.tasks().count(), 10002);
     TRACE(tr("RedmineNetworkingTests::testIssuesRetriever: Tasks retrieved: %1").arg(model.tasks().count()));
+    QCOMPARE(model.tasks().count(), 10002);
 }
 
 void RedmineNetworkingTests::testStatusRetriever()
@@ -106,23 +106,16 @@ void RedmineNetworkingTests::testUsersRetriever()
 
 void RedmineNetworkingTests::testProjectsRetriever()
 {
-    Redmine::ProjectsRetriever retriever(configuration());
-    retriever.setWindow(0, 4);
-    retriever.blockingExecute();
-    QCOMPARE(retriever.success(), true);
+    using namespace Redmine;
+    using namespace ThreadWeaver;
 
-    TaskList tasks;
-    tasks << retriever.projects();
-    if (retriever.limit() < retriever.total()) {
-        for(int current = retriever.offset() + retriever.limit(); current < retriever.total(); current += retriever.limit() ) {
-            Redmine::ProjectsRetriever chunk(configuration());
-            chunk.setWindow(current, retriever.limit());
-            chunk.blockingExecute();
-            QCOMPARE(chunk.success(), true);
-            tasks << chunk.projects();
-        }
-    }
-    TRACE(tr("Retrieved %1 projects").arg(tasks.count()));
+    Model model;
+    ProjectsRetriever retriever(&model, configuration());
+    stream() << retriever;
+    Queue::instance()->finish();
+    QCOMPARE(retriever.success(), true);
+    QCOMPARE(model.tasks().count(), 112);
+    TRACE(tr("RedmineNetworkingTests::testProjectsRetriever: Projects retrieved: %1").arg(model.tasks().count()));
 }
 
 void RedmineNetworkingTests::testTaskListProvider()

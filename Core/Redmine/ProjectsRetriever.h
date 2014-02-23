@@ -3,6 +3,7 @@
 
 #include <threadweaver/Job.h>
 #include <Core/Redmine/RedmineConfiguration.h>
+#include <Core/Redmine/RedmineModel.h>
 
 #include "Core/Task.h"
 #include "Core/Redmine/WindowRetriever.h"
@@ -13,15 +14,14 @@ namespace Redmine {
 class ProjectsRetriever : public WindowRetriever
 {
 public:
-    ProjectsRetriever(Configuration* config = 0);
-    int count();
-    TaskList projects() const;
+    explicit ProjectsRetriever(Model* model, Configuration* config);
 
 protected:
     void run(ThreadWeaver::JobPointer job, ThreadWeaver::Thread* thread) override;
+    virtual void setupSubwindowQueries();
 
 private:
-    TaskList projects_;
+    Model* model_;
 };
 
 };
