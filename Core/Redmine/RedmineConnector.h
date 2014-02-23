@@ -32,7 +32,7 @@ private Q_SLOTS:
 private:
     void handleUpdateFinished();
 
-    QScopedPointer<TaskListProvider> modelSynchronizer_;
+    QScopedPointer<ModelDownloader> modelSynchronizer_;
     QTimer timer_;
     Configuration configuration_;
 };

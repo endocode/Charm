@@ -15,12 +15,11 @@ namespace Redmine {
 
 class Model;
 
-//FIXME rename to ModelSynchronizer
-class TaskListProvider : public QObject
+class ModelDownloader : public QObject
 {
     Q_OBJECT
 public:
-    explicit TaskListProvider(Configuration* config = 0, QObject *parent = 0);
+    explicit ModelDownloader(Configuration* config = 0, QObject *parent = 0);
     void downloadModelData();
     Model* model();
 

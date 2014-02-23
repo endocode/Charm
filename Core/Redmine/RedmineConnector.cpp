@@ -43,7 +43,7 @@ void Connector::triggerModelSynchronization()
 {
     DEBUG("Connector::triggerModelSynchronization: starting model synchronization");
     Q_ASSERT(modelSynchronizer_ == 0);
-    modelSynchronizer_.reset(new TaskListProvider(&configuration_));
+    modelSynchronizer_.reset(new ModelDownloader(&configuration_));
     connect(modelSynchronizer_.data(), SIGNAL(completed()), SLOT(synchronizationCompleted()), Qt::QueuedConnection);
     connect(modelSynchronizer_.data(), SIGNAL(error()), SLOT(synchronizationAborted()), Qt::QueuedConnection);
     modelSynchronizer_->downloadModelData();

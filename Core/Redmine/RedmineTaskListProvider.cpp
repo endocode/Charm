@@ -14,13 +14,13 @@
 
 namespace Redmine {
 
-TaskListProvider::TaskListProvider(Configuration *config, QObject *parent)
+ModelDownloader::ModelDownloader(Configuration *config, QObject *parent)
     : QObject(parent)
     , configuration_(config)
 {
 }
 
-void TaskListProvider::downloadModelData()
+void ModelDownloader::downloadModelData()
 {
     using namespace ThreadWeaver;
 
@@ -59,32 +59,32 @@ void TaskListProvider::downloadModelData()
     connect(job, SIGNAL(done(ThreadWeaver::JobPointer)), SIGNAL(completed()));
     connect(job, SIGNAL(failed(ThreadWeaver::JobPointer)), SIGNAL(error()));
 
-    stream() << sequence_;
+    stream() << job;
 }
 
-Model *TaskListProvider::model()
+Model *ModelDownloader::model()
 {
     return &model_;
 }
 
-void TaskListProvider::abortCurrentSynchronization()
+void ModelDownloader::abortCurrentSynchronization()
 {
     //FIXME we should keep a JobPointer to the currently executing sequence, and only requestAbort() this one:
     ThreadWeaver::Queue::instance()->requestAbort();
 }
 
-void TaskListProvider::verifyPhase1()
+void ModelDownloader::verifyPhase1()
 {
     DEBUG(QObject::tr("Phase 1 downloads completed, verifying..."));
     Q_ASSERT(model_.currentUser().isValid()); // the sequence should have been aborted otherwise
 }
 
-void TaskListProvider::verifyPhase2()
+void ModelDownloader::verifyPhase2()
 {
     DEBUG(QObject::tr("Phase 2 finished, issues and projects downloaded. Building model."));
 }
 
-void TaskListProvider::verifyPhase3()
+void ModelDownloader::verifyPhase3()
 {
     DEBUG(QObject::tr("Phase 3 complete, updating model and handing over to application."));
 //    DEBUG(tr("TaskListProvider::performUpdate: updating..."));
