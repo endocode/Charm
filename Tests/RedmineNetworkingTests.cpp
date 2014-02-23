@@ -122,16 +122,16 @@ void RedmineNetworkingTests::testModelDownload()
 {
     using namespace Redmine;
 
-    ModelDownloader downloader(configuration());
+    QScopedPointer<ModelDownloader> downloader(new ModelDownloader(configuration()));
     QEventLoop loop;
-    QSignalSpy errorSpy(&downloader, SIGNAL(error()));
-    connect(&downloader, SIGNAL(completed()), &loop, SLOT(quit()));
-    connect(&downloader, SIGNAL(error()), &loop, SLOT(quit()));
-    downloader.downloadModelData();
+    QSignalSpy errorSpy(downloader.data(), SIGNAL(error()));
+    connect(downloader.data(), SIGNAL(completed()), &loop, SLOT(quit()));
+    connect(downloader.data(), SIGNAL(error()), &loop, SLOT(quit()));
+    downloader->downloadModelData();
     loop.exec();
     QVERIFY(errorSpy.count() == 0);
     ThreadWeaver::Queue::instance()->finish();
-    TRACE(tr("RedmineNetworkingTests::testTaskListProvider: Retrieved %1 tasks").arg(downloader.model()->tasks().count()));
+    TRACE(tr("RedmineNetworkingTests::testTaskListProvider: Retrieved %1 tasks").arg(downloader->model()->tasks().count()));
 }
 
 void RedmineNetworkingTests::testAbortConnections()
