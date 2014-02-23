@@ -69,8 +69,7 @@ Model *ModelDownloader::model()
 
 void ModelDownloader::abortCurrentSynchronization()
 {
-    //FIXME we should keep a JobPointer to the currently executing sequence, and only requestAbort() this one:
-    ThreadWeaver::Queue::instance()->requestAbort();
+    sequence_.requestAbort();
 }
 
 void ModelDownloader::verifyPhase1()
