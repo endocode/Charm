@@ -1,7 +1,7 @@
 #ifndef PROJECTSRETRIEVER_H
 #define PROJECTSRETRIEVER_H
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 #include <Core/Redmine/RedmineConfiguration.h>
 #include <Core/Redmine/RedmineModel.h>
 

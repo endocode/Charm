@@ -5,7 +5,7 @@
 #include <QUrl>
 #include <QString>
 
-#include <threadweaver/ResourceRestrictionPolicy.h>
+#include <ThreadWeaver/ResourceRestrictionPolicy>
 
 namespace Redmine {
 

@@ -92,7 +92,7 @@ ADD_EXECUTABLE(
     ${RedmineConnectorTests_SRCS}
     ${TestDataResources_SRCS}
 )
-TARGET_LINK_LIBRARIES( RedmineConnectorTests ${TEST_LIBRARIES} )
+TARGET_LINK_LIBRARIES( RedmineConnectorTests ${TEST_LIBRARIES} KF5::ThreadWeaver )
 ADD_TEST( NAME RedmineConnectorTests COMMAND RedmineConnectorTests )
 
 SET( RedmineNetworkingTests_SRCS RedmineNetworkingTests.cpp )

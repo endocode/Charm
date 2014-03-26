@@ -4,7 +4,7 @@
 #include <QNetworkReply>
 #include <QUrlQuery>
 
-#include <threadweaver/Thread.h>
+#include <ThreadWeaver/Thread>
 
 #include <Core/Logging/Macros.h>
 

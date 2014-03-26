@@ -1,4 +1,4 @@
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
 
 #include <Core/Task.h>
 

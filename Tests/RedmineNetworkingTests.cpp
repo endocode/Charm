@@ -1,8 +1,8 @@
 #include <QString>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QCoreApplication>
-#include <threadweaver/ThreadWeaver.h>
-#include <threadweaver/debuggingaids.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/DebuggingAids>
 
 #include <Core/Redmine/RedmineConfiguration.h>
 #include <Core/Redmine/RedmineRetriever.h>

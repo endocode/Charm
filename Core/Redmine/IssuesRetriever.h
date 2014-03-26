@@ -1,7 +1,7 @@
 #ifndef ISSUESRETRIEVER_H
 #define ISSUESRETRIEVER_H
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 #include <Core/Redmine/RedmineConfiguration.h>
 
 #include "Core/Task.h"

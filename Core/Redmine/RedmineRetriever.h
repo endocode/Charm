@@ -3,7 +3,7 @@
 
 #include <QMutex>
 
-#include <threadweaver/Collection.h>
+#include <ThreadWeaver/Collection>
 #include <Core/Redmine/RedmineConfiguration.h>
 
 class QNetworkReply;

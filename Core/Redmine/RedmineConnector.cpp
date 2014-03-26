@@ -1,6 +1,6 @@
 #include <QtCore>
 
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
 
 #include "CharmExceptions.h"
 #include "RedmineConnector.h"
