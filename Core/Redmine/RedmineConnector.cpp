@@ -1,3 +1,5 @@
+#include <QNetworkProxyFactory>
+#include <QNetworkProxy>
 #include <QtCore>
 
 #include <ThreadWeaver/ThreadWeaver>
@@ -25,6 +27,13 @@ Connector::Connector(QObject *parent)
     INFO(tr("Charm Redmine API key: %1").arg(apiKey));
     configuration_.setServer(QUrl(server));
     configuration_.setApiKey(apiKey);
+
+    QNetworkProxyFactory::setUseSystemConfiguration(true);
+    QNetworkProxyQuery proxy(configuration_.server());
+    auto listOfProxies = QNetworkProxyFactory::systemProxyForQuery(proxy);
+    if (!listOfProxies.isEmpty()) {
+        QNetworkProxy::setApplicationProxy(listOfProxies[0]);
+    }
 
     timer_.setSingleShot(true);
     timer_.setInterval(15 * 1000);
