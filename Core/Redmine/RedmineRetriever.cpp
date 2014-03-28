@@ -61,7 +61,9 @@ void Retriever::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread* th)
     QUrl url = configuration_->server();
     url.setPath(url.path() + path());
     url.setQuery(setupQuery());
+
     QNetworkRequest request(url);
+    request.setRawHeader(QByteArray("X-ChiliProject-API-Key"), configuration_->apiKey().toLocal8Bit());
     request.setRawHeader(QByteArray("X-Redmine-API-Key"), configuration_->apiKey().toLocal8Bit());
     {
         QMutexLocker l(&mutex_);
