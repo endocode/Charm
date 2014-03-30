@@ -27,9 +27,10 @@ void ModelDownloader::downloadModelData()
     // Phase 1: the jobs that need be be performed before issues and projects can be downloaded
     //          (for example, the current user needs to be known when parsing the issues):
     phase1_ << new CurrentUserRetriever(&model_, configuration_)
-               // Only admin users may do this:
-               // << new UsersRetriever(model, configuration_)
-            << new StatusRetriever(&model_, configuration_);
+            // Only admin users may do this:
+            // << new UsersRetriever(model, configuration_)
+            // << new StatusRetriever(&model_, configuration_);
+               ;
     // trackers
     // roles
     // project memberships
@@ -75,7 +76,7 @@ void ModelDownloader::abortCurrentSynchronization()
 void ModelDownloader::verifyPhase1()
 {
     DEBUG(QObject::tr("Phase 1 downloads completed, verifying..."));
-    Q_ASSERT(model_.currentUser().isValid()); // the sequence should have been aborted otherwise
+    //Q_ASSERT(model_.currentUser().isValid()); // the sequence should have been aborted otherwise
 }
 
 void ModelDownloader::verifyPhase2()
