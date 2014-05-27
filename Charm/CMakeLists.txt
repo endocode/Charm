@@ -69,6 +69,10 @@ SET(
     Widgets/WeeklyTimesheet.cpp
 )
 
+IF( CHARM_REDMINE_BACKEND )
+include(${CMAKE_CURRENT_SOURCE_DIR}/Redmine/RedmineBackend.cmake)
+ENDIF()
+
 SET(CharmApplication_LIBS)
 
 IF( CHARM_IDLE_DETECTION )
