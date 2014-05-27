@@ -178,7 +178,7 @@ IF( CMAKE_COMPILER_IS_GNUCXX )
     ADD_DEFINITIONS(
         -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith
         -Wwrite-strings -Wpacked -Wformat-security
-        -Wmissing-format-attribute -Wold-style-cast
+        -Wmissing-format-attribute
     )
     ADD_DEFINITIONS( -fvisibility=hidden )
 ELSEIF( CMAKE_CXX_COMPILER MATCHES "clang" )
